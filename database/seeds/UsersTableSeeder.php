@@ -22,8 +22,8 @@ class UsersTableSeeder extends Seeder
             $adminRole->givePermissionTo($permission);
         }
         $adminUser = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
+            'name' => 'Administrador',
+            'email' => 'admin@admin.com',
             'password' => Hash::make('1234')
         ]);
         $adminUser->assignRole($adminRole);
@@ -36,16 +36,16 @@ class UsersTableSeeder extends Seeder
             $editorRole->givePermissionTo($permission);
         }
         $editorUser = User::create([
-            'name' => 'Editor',
-            'email' => 'editor@example.com',
+            'name' => 'Supervisor',
+            'email' => 'supervisor@supervisor.com',
             'password' => Hash::make('1234')
         ]);
         $editorUser->assignRole($editorRole);
 
         $userRole = Role::create(['name' => 'User']);
         $generalUser = User::create([
-            'name' => 'User',
-            'email' => 'user@example.com',
+            'name' => 'Secretário',
+            'email' => 'secretario@secretario.com',
             'password' => Hash::make('1234')
         ]);
         $generalUser->assignRole($userRole);
