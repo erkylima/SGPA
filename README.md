@@ -4,7 +4,7 @@ Esse sistema tem como objetivo gerenciar processos advocatícios sendo capaz de 
 ## Instalação
 Clone o repositório:
 ```shell
-git clone https://github.com/rehmatworks/stisla-laravel.git
+git clone https://github.com/erkylima/SGPA.git
 ```
 
 Instale os pacotes composer:
