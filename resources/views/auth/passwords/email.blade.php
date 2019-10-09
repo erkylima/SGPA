@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="card card-primary">
-  <div class="card-header"><h4>Reset Password</h4></div>
+  <div class="card-header"><h4>Resetar Senha</h4></div>
 
   <div class="card-body">
     <form method="POST" action="{{ route('password.email') }}">
@@ -16,13 +16,13 @@
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-          Send Reset Link
+          Enviar Link de Resete
         </button>
       </div>
     </form>
   </div>
 </div>
-<div class="mt-5 text-muted text-center">
-  Recalled your login info? <a href="{{ route('login') }}">Sign In</a>
+<div class="mt-5 text-white text-center">
+  Lembrou os dados de login? <a href="{{ route('login') }}">Acesse sua conta</a>
 </div>
 @endsection
