@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $adminRole = Role::create(['name' => 'Admin']);
-        $adminPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'delete-users'];
+        $adminPermissions = ['relatorio', 'manage-users', 'view-users', 'create-users', 'edit-users',  'delete-users', 'ver-processo', 'create-processo', 'update-processo'];
         foreach($adminPermissions as $ap)
         {
             $permission = Permission::create(['name' => $ap]);
@@ -28,8 +28,8 @@ class UsersTableSeeder extends Seeder
         ]);
         $adminUser->assignRole($adminRole);
 
-        $editorRole = Role::create(['name' => 'Editor']);
-        $editorPermissions = ['manage-users', 'view-users'];
+        $editorRole = Role::create(['name' => 'Supervisor']);
+        $editorPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo', 'update-processo','ver-pendencias'];
         foreach($editorPermissions as $ep)
         {
             $permission = Permission::firstOrCreate(['name' => $ep]);
@@ -42,7 +42,13 @@ class UsersTableSeeder extends Seeder
         ]);
         $editorUser->assignRole($editorRole);
 
-        $userRole = Role::create(['name' => 'User']);
+        $userRole = Role::create(['name' => 'Secritário']);
+        $userPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo','ver-pendencias'];
+        foreach($userPermissions as $up)
+        {
+            $permission = Permission::firstOrCreate(['name' => $up]);
+            $userRole->givePermissionTo($permission);
+        }
         $generalUser = User::create([
             'name' => 'Secretário',
             'email' => 'secretario@secretario.com',
