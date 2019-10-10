@@ -11,7 +11,8 @@ Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
         'names' => [
             'index' => 'clientes'
         ]
-    ]);;
+    ]);
+    Route::get('cliente_nome', 'ClientesController@cliente_nome')->name('cliente_nome');
 });
 Route::name('admin.')->prefix('admin')->middleware('auth')->group(function() {
     Route::get('index', 'DashboardController')->name('index');

@@ -15,21 +15,124 @@ class ClientesController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->status && $request->status >= 0 && $request->status < 4){
-            $clientes = DB::table('users')                                    
-                                    ->where('status','=',$request->status)
-                                    ->join('clientes','users.id','=','clientes.agenciador_id')
-                                    // ->select('clientes.*','users.name','users.id')
-                                    ->paginate(1);
+        if(!is_null($request->query('status'))){
+        $clientes = DB::table('clientes')
+                                ->where('clientes.status',$request->query('status'))
+                                ->join('users','users.id','=','clientes.agenciador_id')
+                                ->select('users.name','users.avatar','clientes.*')
+                                ->paginate(15);
         }else{
-            $clientes = DB::table('users')
-                                    ->join('clientes','users.id','=','clientes.agenciador_id')
-                                    ->select('users.*','clientes.*')
-                                    ->paginate(1)
-                                    ;
+            $clientes = DB::table('clientes')
+                                ->join('users','users.id','=','clientes.agenciador_id')
+                                ->select('users.name','users.avatar','clientes.*')
+                                ->paginate(1);
         }
+        $output = '';
+        if($request->ajax()){
+            $query = $request->get('query');        
+            if($query != ''){            
+                if(!is_null($request->query('status'))){
+                    $data = DB::table('clientes')
+                    ->where('status',$request->query('status'))
+                    ->where('nome','like','%'.$query.'%')
+                    ->orWhere('sobrenome','like','%'.$query.'%')
+                    ->orWhere('profissao','like','%'.$query.'%')
+                    ->join('users','users.id','=','clientes.agenciador_id')
+                    ->orderBy('nome','asc')
+                    ->select('users.name','users.avatar','clientes.*')
+                    ->paginate(15);
+                }else{
+                    $data = DB::table('clientes')
+                    ->where('nome','like','%'.$query.'%')
+                    ->orWhere('sobrenome','like','%'.$query.'%')
+                    ->orWhere('profissao','like','%'.$query.'%')
+                    ->join('users','users.id','=','clientes.agenciador_id')
+                    ->orderBy('nome','asc')
+                    ->select('users.name','users.avatar','clientes.*')
+                    ->paginate(15);
+                }
+                
+            } else {            
+                if(!is_null($request->query('status'))){
+                    $data = DB::table('clientes')
+                            ->where('status',$request->query('status'))
+                            ->join('users','users.id','=','clientes.agenciador_id')
+                            ->select('users.name','users.avatar','clientes.*')
+                            ->paginate(15);
+                }else{
+                    $data = DB::table('clientes')
+                    ->join('users','users.id','=','clientes.agenciador_id')
+                    ->select('users.name','users.avatar','clientes.*')
+                    ->paginate(15);
+                }
 
-        return view('admin.clientes.index')->with(['clientes'=>$clientes,'status'=>$request->status]);
+            }
+            $total_row = $data->count();
+            $output = "<tr>
+                    <th class=\"text-center pt-2\">
+                        #
+                    </th>
+                    <th>Nome</th>
+                    <th>Profissão</th>
+                    <th>Agenciador</th>
+                    <th>Criado em</th>
+                    <th>Status</th>
+                </tr>";
+            if($total_row > 0){            
+                foreach ($data as $cliente) {
+                    $dia = date("d", strtotime($cliente->created_at));
+                    $mes = date("M", strtotime($cliente->created_at));
+                    $ano = date("Y", strtotime($cliente->created_at));
+                    switch ($cliente->status) {
+                        case 0:
+                            $status = '<div class="badge badge-primary">Concluido</div>';
+                            break;
+                        case 1:
+                            $status = '<div class="badge badge-danger">Rascunho</div>';
+                            break;
+                        case 2:
+                            $status = '<div class="badge badge-warning">Pendente</div>';
+                            break;
+                        case 3:
+                            $status = '<div class="badge badge-dark">Apagado</div>';
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                    $output .= "
+                    <tr>
+                    <td>{$cliente->id}</td>
+                    <td>{$cliente->nome} {$cliente->sobrenome}
+                        <div class=\"table-links\">
+                            <a href='#'>Ver</a>
+                            <div class=\"bullet\"></div>
+                            <a href='#'>Editar</a>
+                            <div class=\"bullet\"></div>
+                            <a href=\"#\" class=\"text-danger\">Apagar</a>
+                        </div>
+                    </td>
+                    <td>{$cliente->profissao}</td>
+                    <td><img alt=\"image\" src=" . asset($cliente->avatar) . " class=\"rounded-circle\" width=\"35\" data-toggle=\"title\" title=\"\"> <div class=\"d-inline-block ml-1\">{$cliente->name}</div></td>
+                    <td>{$dia} de {$mes} de {$ano}</td>
+                    <td>{$status}</td>
+                    </tr>";
+                    
+                }
+            } else {
+                $output .= "
+                                <td>#</td>
+                                <td>Nenhum cliente encontrado</td>
+                            ";
+            }
+            $links = "{$data->appends(request()->except('page'))->links()}";
+            $data = array('table_data' => $output,'total'=>$total_row,'links'=>$links);
+
+            return response()->json($data);  
+
+        }
+        
+        return view('admin.clientes.index')->with(['clientes'=>$clientes,'output'=>$output,'status'=>$request->status]);
     }
 
     /**
@@ -96,5 +199,113 @@ class ClientesController extends Controller
     public function destroy(Clientes $clientes)
     {
         //
+    }
+
+    // Encontrar usuário por nome, email ou cpf
+    public function cliente_nome(Request $request)
+    {
+        $output = '';
+        if($request->ajax()){
+        $query = $request->get('query');        
+        if($query != ''){
+            if(!is_null($request->query('status'))){
+                $data = DB::table('clientes')
+                ->where('status',$request->query('status'))
+                ->where('nome','like','%'.$query.'%')
+                ->orWhere('sobrenome','like','%'.$query.'%')
+                ->orWhere('profissao','like','%'.$query.'%')
+                ->join('users','users.id','=','clientes.agenciador_id')
+                ->orderBy('nome','asc')
+                ->select('users.name','users.avatar','clientes.*')
+                ->get();
+            }else{
+                $data = DB::table('clientes')
+                ->where('nome','like','%'.$query.'%')
+                ->orWhere('sobrenome','like','%'.$query.'%')
+                ->orWhere('profissao','like','%'.$query.'%')
+                ->join('users','users.id','=','clientes.agenciador_id')
+                ->orderBy('nome','asc')
+                ->select('users.name','users.avatar','clientes.*')
+                ->get();
+            }
+            
+        } else {
+            if(!is_null($request->query('status'))){
+                $data = DB::table('clientes')
+                        ->where('status',$request->query('status'))
+                        ->join('users','users.id','=','clientes.agenciador_id')
+                        ->select('users.name','users.avatar','clientes.*')
+                        ->paginate(1);
+            }else{
+                $data = DB::table('clientes')
+                ->join('users','users.id','=','clientes.agenciador_id')
+                ->select('users.name','users.avatar','clientes.*')
+                ->paginate(1);
+            }
+
+        }
+        $total_row = $data->count();
+        $output = "<tr>
+                <th class=\"text-center pt-2\">
+                    #
+                </th>
+                <th>Nome</th>
+                <th>Profissão</th>
+                <th>Agenciador</th>
+                <th>Criado em</th>
+                <th>Status</th>
+            </tr>";
+        if($total_row > 0){            
+            foreach ($data as $cliente) {
+                $dia = date("d", strtotime($cliente->created_at));
+                $mes = date("M", strtotime($cliente->created_at));
+                $ano = date("Y", strtotime($cliente->created_at));
+                switch ($cliente->status) {
+                    case 0:
+                        $status = '<div class="badge badge-primary">Concluido</div>';
+                        break;
+                    case 1:
+                        $status = '<div class="badge badge-danger">Rascunho</div>';
+                        break;
+                    case 2:
+                        $status = '<div class="badge badge-warning">Pendente</div>';
+                        break;
+                    case 3:
+                        $status = '<div class="badge badge-dark">Apagado</div>';
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                $output .= "
+                <tr>
+                <td>{$cliente->id}</td>
+                <td>{$cliente->nome} {$cliente->sobrenome}
+                    <div class=\"table-links\">
+                        <a href='#'>Ver</a>
+                        <div class=\"bullet\"></div>
+                        <a href='#'>Editar</a>
+                        <div class=\"bullet\"></div>
+                        <a href=\"#\" class=\"text-danger\">Apagar</a>
+                    </div>
+                </td>
+                <td>{$cliente->profissao}</td>
+                <td><img alt=\"image\" src=" . asset($cliente->avatar) . " class=\"rounded-circle\" width=\"35\" data-toggle=\"title\" title=\"\"> <div class=\"d-inline-block ml-1\">{$cliente->name}</div></td>
+                <td>{$dia} de {$mes} de {$ano}</td>
+                <td>{$status}</td>
+                </tr>";
+                
+            }
+        } else {
+            $output .= "
+                            <td>#</td>
+                            <td>Nenhum cliente encontrado</td>
+                        ";
+        }
+        }
+        $links =  str_replace("cliente_nome","clientes","{$data->appends(request()->except('page'))->links()}");
+        $data = array('table_data' => $output,'total'=>$total_row,'links'=>$links);
+        
+        echo json_encode($data);
     }
 }

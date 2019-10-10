@@ -51,114 +51,71 @@ Clientes
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                    <h4>Todos Clientes</h4>
+                    <h4>Todos Clientes <span id="total"></span></h4>
                     </div>
-                    <div class="card-body">
-                    <div class="float-left">
-                        <select class="form-control selectric">
-                        <option selected>Ação para selecionado</option>
-                        <option value="0">Mover para Concluidos</option>
-                        <option value="1">Mover para Rascunhos</option>
-                        <option value="2">Mover para Pendentes</option>
-                        <option value="3">Apagar Permanentemente</option>
-                        </select>
-                    </div>
+                    <div class="card-body">                    
                     <div class="float-right">
                         <form>
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Pesquisar">
+                            <input id="search" type="text" class="form-control" placeholder="Pesquisar">
                             <div class="input-group-append">
-                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                            <button id="botaosearch" class="btn btn-primary"><i class="fas fa-search"></i></button>
                             </div>
                         </div>
                         </form>
                     </div>
 
                     <div class="clearfix mb-3"></div>
-
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                        <tr>
-                            <th class="text-center pt-2">
-                                #
-                            </th>
-                            <th>Nome</th>
-                            <th>Profissão</th>
-                            <th>Agenciador</th>
-                            <th>Criado em</th>
-                            <th>Status</th>
-                        </tr>
+                    
+                        <div class="table-responsive">
+                            <table id="table" class="table table-striped">                        
+                                
+                                {{$output}}
+                                
+                            </table>
+                        </div>
+                        <div id="links" class="float-right">
+                            {{-- {{ $clientes->links() }} --}}
+                        </div>
                         
-                        @forelse ($clientes as $cliente)
-                            @if($cliente->status == $status || is_null($status))
-                            <tr>
-                                <td>
-                                <div class="custom-checkbox custom-control">
-                                    <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-2">
-                                    <label for="checkbox-2" class="custom-control-label">&nbsp;</label>
-                                </div>
-                                </td>
-                                {{-- <td>{{$cliente->nome}} --}}
-                                <div class="table-links">
-                                    
-                                    <a href="#">Ver</a>
-                                    <div class="bullet"></div>
-                                    <a href="#">Editar</a>
-                                    <div class="bullet"></div>
-                                    <a href="#" class="text-danger">Apagar</a>
-                                </div>
-                                </td>
-                                <td>
-                                <a href="#">Web Developer</a>,
-                                <a href="#">Tutorial</a>
-                                </td>
-                                <td>
-                                <a href="#">
-                                    <img alt="image" src="../assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                </a>
-                                </td>
-                                <td>2018-01-20</td>
-                            <td>@php
-                                switch ($cliente->status) {
-                                    case 0:
-                                        echo '<div class="badge badge-primary">Concluido</div>';
-                                        break;
-                                    case 1:
-                                        echo '<div class="badge badge-danger">Rascunho</div>';
-                                        break;
-                                    case 2:
-                                        echo '<div class="badge badge-warning">Pendente</div>';
-                                        break;
-                                    case 3:
-                                        echo '<div class="badge badge-secundary">Apagado</div>';
-                                        break;
-                                    default:
-                                        # code...
-                                        break;
-                                }
-                                @endphp
-                            </tr>
-                            @else
-                            <tr>
-                                <td>#</td>
-                                <td>Nenhum cliente encontrado</td>
-                            </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td>#</td>
-                                <td>Nenhum cliente encontrado</td>
-                            </tr>
-                        @endforelse                                                                
-                        </table>
-                    </div>
-                    <div class="float-right">
-                        {{ $clientes->appends(request()->except('page'))->links() }}                        
-                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            var url = $(this).attr('href');
+            // fetch_clientes_data(url);
+
+            fetch_clientes_data('',url);
+            
+        });
+        function fetch_clientes_data(query = '',url)
+        {
+            $.ajax({
+                url:url,
+                method:'GET',
+                data:{query:query{!!$status != '' ? ',status:'.$status : ''!!}},
+                dataType:'json',
+                success:function(data)
+                {
+                    $('#table').html(data.table_data);
+                    $('#total').text(data.total);
+                    $('#links').html(data.links);
+                }
+            });
+        }
+        $(document).on('submit','#botaosearch',function(){
+            var query = $(this).val();
+            fetch_clientes_data(query);
+        });
+        $(document).on('keyup','#search',function(){
+            var query = $(this).val();
+            fetch_clientes_data(query);
+        });
+    </script>
 @endsection
