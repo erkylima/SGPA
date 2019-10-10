@@ -48,7 +48,7 @@ class UserUpdateRequest extends FormRequest
             $validator->after(function ($validator) {
                 if(!Hash::check($this->current_password, $this->user->password))
                 {
-                    $validator->errors()->add('current_password', 'Invalid account password. Settings cannot be updated!');
+                    $validator->errors()->add('current_password', 'Senha inválida. Não foi possível atualizar os dados!');
                 }
             });
         }

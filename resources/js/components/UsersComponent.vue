@@ -3,7 +3,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h4>Users <span v-if="total">({{ total }})</span></h4>
+                <h4>Usuários <span v-if="total">({{ total }})</span></h4>
                 <div class="card-header-action">
                     <a v-if="$parent.userCan('create-users')" v-bind:href="$parent.MakeUrl('admin/users/create')" class="btn btn-primary">Add <i class="fas fa-plus"></i></a>
                 </div>
@@ -13,12 +13,12 @@
                     <table class="table table-striped" v-if="users.length">
                         <tbody>
                             <tr>
-                                <th>Name</th>
+                                <th>Nome</th>
                                 <th>Email</th>
-                                <th>Reg. Date</th>
+                                <th>Data de Registro</th>
                                 <th></th>
                             </tr>
-                            <tr v-for="user, index in users">
+                            <tr v-for="(user, index) in users" :key="user.id">
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.created_at }}</td>
@@ -34,13 +34,13 @@
                         </tbody>
                     </table>
                     <div v-if="!users.length" class="text-center p-3 text-muted">
-                        <h5>No Results</h5>
-                        <p>Looks like you have not added any users yet!</p>
+                        <h5>Nenhum resultado</h5>
+                        <p>Observe se existem usuários cadastrados!</p>
                     </div>
                 </div>
                 <div class="text-center p-4 text-muted" v-else>
-                    <h5>Loading</h5>
-                    <p>Please wait, data is being loaded...</p>
+                    <h5>Carregando</h5>
+                    <p>Por favor, aguarde enquanto está carregando...</p>
                 </div>
             </div>
         </div>

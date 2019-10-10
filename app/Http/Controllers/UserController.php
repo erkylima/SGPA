@@ -99,6 +99,13 @@ class UserController extends Controller
             $user->update($request->only([
                 'name', 'email'
             ]));
+                        
+            if($request->hasFile('image_avatar')){
+                $user->avatar != 'assets/img/users/'.$user->id.'/avatar.jpg' ? $user->avatar = 'assets/img/users/'.$user->id.'/avatar.jpg' : '';
+                $user->save();
+                $file = $request->file('image_avatar');
+                $file->move(public_path('/assets/img/users/'.$user->id),'avatar.jpg');
+            }
 
             if($request->password)
             {

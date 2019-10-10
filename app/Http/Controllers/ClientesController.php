@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Clientes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClientesController extends Controller
 {
@@ -12,9 +13,23 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if($request->status && $request->status >= 0 && $request->status < 4){
+            $clientes = DB::table('users')                                    
+                                    ->where('status','=',$request->status)
+                                    ->join('clientes','users.id','=','clientes.agenciador_id')
+                                    // ->select('clientes.*','users.name','users.id')
+                                    ->paginate(1);
+        }else{
+            $clientes = DB::table('users')
+                                    ->join('clientes','users.id','=','clientes.agenciador_id')
+                                    ->select('users.*','clientes.*')
+                                    ->paginate(1)
+                                    ;
+        }
+
+        return view('admin.clientes.index')->with(['clientes'=>$clientes,'status'=>$request->status]);
     }
 
     /**

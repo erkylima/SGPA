@@ -6,11 +6,11 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h4>Update Profile</h4>
+                <h4>Atualizar Perfil</h4>
             </div>
             <div class="card-body">
                 <div class="form-group row mb-4">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name</label>
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Nome</label>
                     <div class="col-sm-12 col-md-7">
                         <input v-bind:class="{'is-invalid': errors.name}" type="text" v-model="name" class="form-control">
                         <div class="invalid-feedback" v-if="errors.name">
@@ -28,18 +28,27 @@
                     </div>
                 </div>
                 <div class="form-group row mb-4" v-if="$parent.userCan('edit-users') && !getUserdata('isme')">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Role</label>
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Tipo de Usuário</label>
                     <div class="col-sm-12 col-md-7">
                         <select class="form-control" v-model="role" v-bind:class="{'is-invalid': errors.role}">
-                            <option v-for="role in roles" v-bind:value="role.id">{{ role.name }}</option>
+                            <option v-for="role in roles"  v-bind:key="role.id" v-bind:value="role.id">{{ role.name }}</option>
                         </select>
                         <div class="invalid-feedback" v-if="errors.role">
                             <p>{{ errors.role[0] }}</p>
                         </div>
                     </div>
                 </div>
+                <div class="form-group row mb-4">
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Avatar</label>
+                    <div class="col-sm-12 col-md-7">
+                    <div id="image-preview" class="image-preview">
+                        <label for="image_avatar" id="image-label">Escolher arquivo</label>
+                        <input type="file" name="image_avatar" id="image_avatar" />
+                    </div>
+                    </div>
+                </div>
                 <div class="form-group row mb-4" v-if="!$parent.userCan('edit-users')">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Current Password</label>
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Senha Atual</label>
                     <div class="col-sm-12 col-md-7">
                         <input v-bind:class="{'is-invalid': errors.current_password}" type="password" v-model="current_password" class="form-control" autocomplete="new-password" placeholder="Current password">
                         <div class="invalid-feedback" v-if="errors.current_password">
@@ -48,16 +57,16 @@
                     </div>
                 </div>
                 <div class="form-group row mb-4">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Password</label>
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Senha</label>
                     <div class="col-sm-12 col-md-7">
-                        <input v-bind:class="{'is-invalid': errors.password}" type="password" v-model="password" class="form-control" autocomplete="new-password" placeholder="New password (Only if you want to change the password)">
+                        <input v-bind:class="{'is-invalid': errors.password}" type="password" v-model="password" class="form-control" autocomplete="new-password" placeholder="Nova senha (Somente se quiser alterar)">
                         <div class="invalid-feedback" v-if="errors.password">
                             <p>{{ errors.password[0] }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-4">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Confirm Password</label>
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Confirmar Senha</label>
                     <div class="col-sm-12 col-md-7">
                         <input v-bind:class="{'is-invalid': errors.password_confirmation}" type="password" v-model="password_confirmation" class="form-control" autocomplete="new-password">
                         <div class="invalid-feedback" v-if="errors.password_confirmation">
@@ -68,7 +77,7 @@
                 <div class="form-group row mb-4">
                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                     <div class="col-sm-12 col-md-7">
-                        <button v-bind:disabled="loading" @click="updateUser" class="btn btn-primary"><span v-if="loading">Updating</span><span v-else>Update</span></button>
+                        <button v-bind:disabled="loading" @click="updateUser" class="btn btn-primary"><span v-if="loading">Atualizar</span><span v-else>Update</span></button>
                     </div>
                 </div>
             </div>
@@ -84,6 +93,7 @@ export default {
         return {
             name: this.getUserdata('name'),
             email: this.getUserdata('email'),
+            image_avatar: this.getUserdata('image_avatar'),
             current_password: '',
             password: '',
             password_confirmation: '',
@@ -113,9 +123,10 @@ export default {
             _this.errors = [];
             _this.message = '';
             _this.loading = true;
-            axios.post(this.$parent.MakeUrl('admin/users/'+this.getUserdata('id')), {'name': this.name, 'email': this.email, 'current_password': this.current_password, 'role': this.role, 'password': this.password, 'password_confirmation': this.password_confirmation, '_method': 'PATCH'}).then((res) => {
+            
+            axios.post(this.$parent.MakeUrl('admin/users/'+this.getUserdata('id')), {'name': this.name, 'email': this.email,'image_avatar': this.image_avatar, 'current_password': this.current_password, 'role': this.role, 'password': this.password, 'password_confirmation': this.password_confirmation,'_enctype':'multipart/form-data', '_method': 'PATCH'}).then((res) => {
                 _this.loading = false;
-                _this.message = 'Profile details have been updated successfully!';
+                _this.message = 'Dados atualizados com sucesso!';
             }).catch((err) => {
                 _this.errors = err.response.data.errors;
                 _this.loading = false;

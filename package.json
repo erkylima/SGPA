@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "vue-ios-alertview": "^1.1.2"
+        "vue-ios-alertview": "^1.1.2",
+        "vue-moment": "^4.0.0"
     }
 }

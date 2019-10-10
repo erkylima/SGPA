@@ -30,6 +30,7 @@ class CreateProcessosTable extends Migration
 
             $table->string('titulo');
             $table->string('descricao');
+            $table->tinyInteger('tipo');
             $table->timestamps();
         });
 

@@ -16,6 +16,12 @@ class CreateClientesTable extends Migration
         // Criar tabela cliente
         Schema::create('clientes', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('chave_acesso');
+            $table->tinyInteger('agenciador_id');
+            $table->foreign('agenciador_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->string('nome');
             $table->string('sobrenome');
             $table->string('profissao');

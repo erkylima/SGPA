@@ -10,11 +10,11 @@ trait UserTrait {
 
     public function getAvatarlinkAttribute()
     {
-        if(Storage::disk('public')->exists($this->avatar))
+        if(!is_null($this->avatar) && asset($this->avatar))
         {
-            return Storage::disk('public')->url($this->avatar);
+            return asset($this->avatar);
         }
-        return asset('assets/img/avatar/avatar-1.png');
+        return asset('assets/img/p-50.png');
     }
 
     public function getIsmeAttribute()

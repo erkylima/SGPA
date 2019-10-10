@@ -1,14 +1,23 @@
 <?php
 Route::get('/', function() {
-    return redirect(route('admin.dashboard'));
+    return redirect(route('admin.index'));
 });
 
 Route::get('home', function() {
-    return redirect(route('admin.dashboard'));
+    return redirect(route('admin.index'));
 });
-
+Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
+    Route::resource('clientes', 'ClientesController', [
+        'names' => [
+            'index' => 'clientes'
+        ]
+    ]);;
+});
 Route::name('admin.')->prefix('admin')->middleware('auth')->group(function() {
-    Route::get('dashboard', 'DashboardController')->name('dashboard');
+    Route::get('index', 'DashboardController')->name('index');
+    Route::get('marcar_lido', function(){
+        auth()->user()->unreadNotifications->markAsRead();
+    })->name('marcar_lido');
 
     Route::get('users/roles', 'UserController@roles')->name('users.roles');
     Route::resource('users', 'UserController', [
