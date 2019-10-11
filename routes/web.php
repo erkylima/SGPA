@@ -14,8 +14,8 @@ Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
     ]);
     Route::get('cliente_nome', 'ClientesController@cliente_nome')->name('cliente_nome');
 });
-Route::name('admin.')->prefix('admin')->middleware('auth')->group(function() {
-    Route::get('index', 'DashboardController')->name('index');
+Route::name('admin.')->prefix('sistema')->middleware('auth')->group(function() {
+    Route::get('dashboard', 'DashboardController')->name('index');
     Route::get('marcar_lido', function(){
         auth()->user()->unreadNotifications->markAsRead();
     })->name('marcar_lido');

@@ -22,6 +22,7 @@ class CreateClientesTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+            $table->string('email');
             $table->string('nome');
             $table->string('sobrenome');
             $table->string('profissao');

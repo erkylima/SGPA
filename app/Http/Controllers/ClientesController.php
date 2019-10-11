@@ -126,6 +126,14 @@ class ClientesController extends Controller
                             ";
             }
             $links = "{$data->appends(request()->except('page'))->links()}";
+            $pesquisa = "
+            <div class=\"input-group\">
+                <input id=\"search\" type=\"text\" class=\"form-control\" placeholder=\"Pesquisar\">
+                <div class=\"input-group-append\">
+                <button id=\"botaosearch\" class=\"btn btn-primary\"><i class=\"fas fa-search\"></i></button>
+                </div>
+            </div>
+            ";
             $data = array('table_data' => $output,'total'=>$total_row,'links'=>$links);
 
             return response()->json($data);  
@@ -142,7 +150,7 @@ class ClientesController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.clientes.criar');
     }
 
     /**
@@ -153,7 +161,37 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $cliente = new Clientes();
+        if(auth()->user()->can('create-cliente'))
+        {
+            $request->validate([
+                'name' => 'required|min:3|max:255',
+                'email' => 'required|email|unique:users',
+                'senha' => 'required|min:8|confirmed'
+            ]);
+            $cliente->name=$request->name;
+            $cliente->genero=$request->genero;
+            $cliente->email=$request->email;
+            $cliente->telefone=$request->telefone;
+            $cliente->cpf=$request->cpf;
+            $cliente->nacionalidade=$request->nacionalidade;
+            $cliente->estado_civil=$request->estado_civil;
+            $cliente->rg=$request->rg;
+            $cliente->orgao=$request->orgao;
+            $cliente->rua=$request->rua;
+            $cliente->complemento=$request->complemento;
+            $cliente->numero=$request->numero;
+            $cliente->bairro=$request->bairro;
+            $cliente->cep=$request->cep;
+            $cliente->cidade=$request->cidade;
+            $cliente->estado=$request->estado;                                                
+            $cliente->password=Hash::make($request->senha);                         
+                 
+            $cliente->save();
+            return redirect()->back()->with('message','Usuário criado com sucesso');
+        } else {
+            return redirect()->back()->with('message','Você não tem permissão para criar novo cliente');
+        }
     }
 
     /**
