@@ -25,40 +25,186 @@ Novo Cliente
         <p class="section-lead">
         Nessa página você pode criar um novo cliente e preencher seus campos.
         </p>
-
+        @if(session()->get('success'))
+        <div class="alert alert-success m-3" role="alert">
+            {{ session()->get('success') }}
+        </div>
+        @elseif(session()->get('falha'))
+            <div class="alert alert-danger m-3" role="alert">
+                {{ session()->get('falha') }}
+            </div>
+        @endif
         <div class="row">
             <div class="col-12">
                 <div class="card">
                 <div class="card-header">
-                    <h4>Preencha o Formulário</h4>
+                    <h4>Preencha o Formulário</h4>                    
                 </div>
                 <div class="card-body">
-                    <form name="criar" action="{{ route('painel.clientes.store')}}" method="post">
-                        {{ csrf_field() }}                                
-                        
-                        <div class="form-group row mb-4">
-                            <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Nome</label>
-                            <div class="col-sm-12 col-md-7">
-                                <input type="text" name="name" id="name" class="form-control" value="" tabindex="1" placeholder="Digite o nome do usuário">
+                    <form name="criar" action="{{ route('painel.clientes.store')}}" method="post" enctype="multipart/form-data">
+                        {{ csrf_field() }}     
+                        <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
+                        <div class="form-group row mb-4 justify-content-center">
+                            <div class="custom-file  col-lg-4 col-md-12">
+                                <input type="file" class="custom-file-input" id="perfil" name="perfil">
+                                <label class="custom-file-label" for="perfil">Escolher arquivo</label>
+                            </div>
+                        </div>                    
+                        <div class="form-row row mb-4 justify-content-center">                            
+                            <div class="form-group col-lg-4 col-md-12">
+                                <label for="name">Nome (*)</label>
+                                    
+                                <input type="text" name="name" id="name" class="form-control" value="" tabindex="1" placeholder="Digite o nome do cliente">
                                 <div class="invalid-feedback">
                                     <p>{{ $errors->first('name') }}</p>
+                                </div>                                    
+                            </div>
+                            <div class="form-group col-lg-4 col-md-12">
+                                <label for="sobrenome">Sobrenome (*)</label>                                    
+                                <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="" tabindex="1" placeholder="Digite o sobrenome do cliente">
+                                <div class="invalid-feedback">
+                                    <p>{{ $errors->first('sobrenome') }}</p>
                                 </div>
-                            </div>                                    
+                                    
+                            </div>                            
                         </div>
-
-                        <div class="form-group row mb-4">
-                            <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="email">Email</label>
-                            <div class="col-sm-12 col-md-7">
+                        <div class="form-row row mb-4 justify-content-center">
+                            <div class="form-group col-lg-4 col-md-12">
+                                <label for="email">Email (*)</label>
                                 <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="">
                                 <div class="invalid-feedback">
                                     {{ $errors->first('email') }}
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="form-row row mb-4 justify-content-center">
+
                             <div class="form-group col-lg-4 col-md-12">
-                                <label for="pais">Pais</label>
+                                <label for="profissao">Profissão (*)</label>                                    
+                                <input type="text" name="profissao" id="profissao" class="form-control" value="" tabindex="1" placeholder="Digite a profissão do cliente">
+                                <div class="invalid-feedback">
+                                    <p>{{ $errors->first('sobrenome') }}</p>
+                                </div>                                    
+                            </div>
+                        </div>
+
+                        <div class="form-row row mb-4 justify-content-center">                            
+                            <div class="form-group col-lg-4 col-md-12">
+                                <label for="genero" class="control-label">Genero (*)</label>
+                                <select class="form-control" id="genero" tabindex="10" name="genero">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                    <option value="O">Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-lg-4 col-md-12">
+                                <label for="estado_civil">Estado Civil (*)</label>
+                                    <select class="form-control" id="estado_civil" tabindex="2" name="estado_civil">
+                                            <option value="Solteiro">Solteiro</option>
+                                            <option value="Casado">Casado</option>
+                                            <option value="Separado">Separado</option>
+                                            <option value="Divorciado">Divorciado</option>
+                                            <option value="Viúvo">Viúvo</option>
+                                            <option value="Amasiado">Amasiado</option>
+                                    </select>                    
+                            </div>
+                        </div> 
+
+                        <div class="form-row row mb-4 justify-content-center">
+                            <div class="form-group col-lg-3 col-md-12">
+                                <label data-toggle="tooltip" data-placement="top" title="Clique em Foto RG para enviar o arquivo do RG." for="rg">RG (*)</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" placeholder="Foto" class="custom-file-input" id="foto_rg" name="foto_rg">
+                                        <label class="custom-file-label" for="foto_rg">Foto RG</label>
+                                    </div>
+                                    <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
+                                </div>                    
+                            </div>
+            
+                            <div class="form-group col-lg-2 col-md-12">
+                                <label for="orgao">Orgão (*)</label>
+                                <div class="input-group">
+                                    <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="">
+                                </div>                    
+                            </div>
+            
+                            <div class="form-group col-lg-3 col-md-12">
+                                <label data-toggle="tooltip" data-placement="top" title="Clique em Foto CPF para enviar o arquivo do CPF." for="cpf">CPF (*)</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" placeholder="Foto" class="custom-file-input" id="foto_cpf" name="foto_cpf">
+                                        <label class="custom-file-label" for="foto_cpf">Foto CPF</label>
+                                    </div>                                    
+                                    <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
+                                </div>                                        
+                            </div>
+                            
+                            
+                        </div>
+
+                        <div class="form-row row mb-4 justify-content-center">
+                            <div class="form-group col-lg-3 col-md-12">
+                                <label for="bairro">Bairro (*)</label>
+                                <div class="input-group">
+                                    <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="">
+                                </div>                    
+                            </div>
+            
+                            <div class="form-group col-lg-3 col-md-12">
+                                <label for="cidade">Cidade (*)</label>
+                                <div class="input-group">
+                                <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="">
+                                </div>                    
+                            </div>
+            
+                            <div class="form-group col-lg-2 col-md-12">
+                                <label for="estado">Estado (*)</label>
+                                    <select class="form-control" id="estado" tabindex="2" name="estado">
+                                        <option  value="AC">Acre</option>
+                                        <option value="AL">Alagoas</option>
+                                        <option value="AP">Amapá</option>
+                                        <option value="AM">Amazonas</option>
+                                        <option value="BA">Bahia</option>
+                                        <option value="CE">Ceará</option>
+                                        <option value="DF">Distrito Federal</option>
+                                        <option value="ES">Espírito Santo</option>
+                                        <option value="GO">Goiás</option>
+                                        <option value="MA">Maranhão</option>
+                                        <option value="MT">Mato Grosso</option>
+                                        <option value="MS">Mato Grosso do Sul</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PA">Pará</option>
+                                        <option value="PB">Paraíba</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="PE" selected>Pernambuco</option>
+                                        <option value="PI">Piauí</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="RN">Rio Grande do Norte</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                        <option value="RO">Rondônia</option>
+                                        <option value="RR">Roraima</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="SE">Sergipe</option>
+                                        <option value="TO">Tocantins</option>
+                                        <option value="EX">Estrangeiro</option>
+                                    </select>                    
+                            </div>                        
+                        </div>
+
+                        <div class="form-row row mb-4 justify-content-center">
+                            <div class="form-group col-lg-5 col-md-12">
+                                <label for="rua">Rua (*)</label>
+                                <div class="input-group">
+                                    <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="">
+                                </div>
+                                <div class="invalid-feedback">
+                                {{ $errors->first('rua') }}
+                                </div>
+                            </div>
+            
+                            <div class="form-group col-lg-2 col-md-12">
+                                <label for="pais">Pais (*)</label>
                                 <select class="form-control" id="pais" tabindex="2" name="pais">
                                     <option value="Brasil" selected>Brasil</option>    
                                     <option value="África do Sul">África do Sul</option>
@@ -236,118 +382,9 @@ Novo Cliente
                                     <option value="Zimbábue">Zimbábue</option>
                                 </select>                
                             </div>
-            
-                            <div class="form-group col-lg-4 col-md-12">
-                                <label for="estado_civil">Estado Civil</label>
-                                    <select class="form-control" id="estado_civil" tabindex="2" name="estado_civil">
-                                            <option value="Solteiro">Solteiro</option>
-                                            <option value="Casado">Casado</option>
-                                            <option value="Separado">Separado</option>
-                                            <option value="Divorciado">Divorciado</option>
-                                            <option value="Viúvo">Viúvo</option>
-                                            <option value="Amasiado">Amasiado</option>
-                                    </select>                    
-                            </div>
-                        </div> 
 
-                        <div class="form-row row mb-4 justify-content-center">
-                            <div class="form-group col-lg-3 col-md-12">
-                                <label for="rg">RG</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-id-badge"></i>
-                                        </div>
-                                    </div>
-                                    <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
-                                </div>                    
-                            </div>
-            
-                            <div class="form-group col-lg-2 col-md-12">
-                                <label for="orgao">Orgão</label>
-                                <div class="input-group">
-                                    <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="">
-                                </div>                    
-                            </div>
-            
-                            <div class="form-group col-lg-3 col-md-12">
-                                <label for="cpf">CPF</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-address-card"></i>
-                                        </div>
-                                    </div>
-                                    <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
-                                </div>                                        
-                            </div>
-                            
-                            
-                        </div>
-
-                        <div class="form-row row mb-4 justify-content-center">
-                            <div class="form-group col-lg-3 col-md-12">
-                                <label for="bairro">Bairro</label>
-                                <div class="input-group">
-                                    <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="">
-                                </div>                    
-                            </div>
-            
-                            <div class="form-group col-lg-3 col-md-12">
-                                <label for="cidade">Cidade</label>
-                                <div class="input-group">
-                                <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="">
-                                </div>                    
-                            </div>
-            
-                            <div class="form-group col-lg-2 col-md-12">
-                                <label for="estado">Estado</label>
-                                    <select class="form-control" id="estado" tabindex="2" name="estado">
-                                        <option  value="AC">Acre</option>
-                                        <option value="AL">Alagoas</option>
-                                        <option value="AP">Amapá</option>
-                                        <option value="AM">Amazonas</option>
-                                        <option value="BA">Bahia</option>
-                                        <option value="CE">Ceará</option>
-                                        <option value="DF">Distrito Federal</option>
-                                        <option value="ES">Espírito Santo</option>
-                                        <option value="GO">Goiás</option>
-                                        <option value="MA">Maranhão</option>
-                                        <option value="MT">Mato Grosso</option>
-                                        <option value="MS">Mato Grosso do Sul</option>
-                                        <option value="MG">Minas Gerais</option>
-                                        <option value="PA">Pará</option>
-                                        <option value="PB">Paraíba</option>
-                                        <option value="PR">Paraná</option>
-                                        <option value="PE">Pernambuco</option>
-                                        <option value="PI">Piauí</option>
-                                        <option value="RJ">Rio de Janeiro</option>
-                                        <option value="RN">Rio Grande do Norte</option>
-                                        <option value="RS">Rio Grande do Sul</option>
-                                        <option value="RO">Rondônia</option>
-                                        <option value="RR">Roraima</option>
-                                        <option value="SC">Santa Catarina</option>
-                                        <option value="SP">São Paulo</option>
-                                        <option value="SE">Sergipe</option>
-                                        <option value="TO">Tocantins</option>
-                                        <option value="EX">Estrangeiro</option>
-                                    </select>                    
-                            </div>                        
-                        </div>
-
-                        <div class="form-row row mb-4 justify-content-center">
-                            <div class="form-group col-lg-7 col-md-12">
-                                <label for="rua">Rua</label>
-                                <div class="input-group">
-                                    <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="1" value="">
-                                </div>
-                                <div class="invalid-feedback">
-                                {{ $errors->first('rua') }}
-                                </div>
-                            </div>
-            
                             <div class="form-group col-lg-1 col-md-12">
-                                <label for="numero">Número</label>
+                                <label for="numero">Número (*)</label>
                                 <div class="input-group">
                                     <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="">
                                 </div>
@@ -359,7 +396,7 @@ Novo Cliente
                         
                         <div class="form-row row mb-4 justify-content-center">
                             <div class="form-group col-lg-4 col-md-12">
-                                <label for="complemento">Complemento</label>
+                                <label for="complemento">Complemento (*)</label>
                                 <div class="input-group">                    
                                     <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="" >
                                     <div class="invalid-feedback">
@@ -368,7 +405,7 @@ Novo Cliente
                                 </div>
                             </div>
                             <div class="form-group col-lg-4 col-md-12">
-                                <label for="cep">CEP</label>
+                                <label for="cep">CEP (*)</label>
                                 <div class="input-group">
                                     <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="">
                                 </div>
@@ -380,58 +417,45 @@ Novo Cliente
 
                         <div class="form-row row justify-content-center">
                             <div class="form-group col-lg-4 col-md-12">
-                                <label for="telefone">Telefone</label>
+                                <label for="telefone1">1º Telefone (*)</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
                                             <i class="fas fa-phone"></i>
                                         </div>
                                     </div>
-                                    <input id="telefone" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone" tabindex="9" value="" >
+                                    <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="" >
                                     <div class="invalid-feedback">
                                         {{ $errors->first('fone') }}
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group col-lg-4 col-md-12">
-                                <label for="genero" class="control-label">Genero</label>
-                                <select class="form-control" id="genero" tabindex="10" name="genero">
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Feminino</option>
-                                    <option value="O">Outro</option>
+                                <label for="telefone2">2º Telefone</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                    </div>
+                                    <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="" >
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('fone') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4 justify-content-left">
+                            <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status</label>
+                            <div class="col-sm-12 col-md-4">
+                                <select name="status" class="form-control selectric">
+                                    <option value="1">Rascunho</option>
+                                    <option value="0">Concluído</option>
+                                    <option value="2">Pendente</option>
                                 </select>
                             </div>
-                        </div>                                
-
-                        <div class="form-group row mb-4">
-                            <label for="password" class="control-label col-form-label text-md-right col-12 col-md-3 col-lg-3">Senha</label>
-                            <div class="input-group col-sm-12 col-md-7">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <i class="fas fa-lock"></i>
-                                    </div>
-                                </div>
-                                <input id="password" type="password" class="form-control {{ $errors->has('password') ? ' is-invalid': '' }}" placeholder="Defina uma senha" name="password" tabindex="12">
-                            </div>
-                            <div class="invalid-feedback">
-                            {{ $errors->first('password') }}
-                            </div>
-                        </div>
-            
-                        <div class="form-group row mb-4">
-                            <label for="password_confirmation" class="control-label control-label col-form-label text-md-right col-12 col-md-3 col-lg-3">Confirmar Senha</label>
-                            <div class="input-group col-sm-12 col-md-7">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <i class="fas fa-lock"></i>
-                                    </div>
-                                </div>
-                                <input id="password_confirmation" type="password" placeholder="Confirme a senha" class="form-control {{ $errors->has('password_confirmation') ? ' is-invalid': '' }}" name="password_confirmation" tabindex="15">
-                            </div>
-                            <div class="invalid-feedback">
-                            {{ $errors->first('password_confirmation') }}
-                            </div>
-                        </div>
+                        </div>                                                        
 
                         
                     </form>
@@ -522,25 +546,13 @@ Novo Cliente
                 message: 'Você precisa definir um CEP válido',
                 position: 'topRight',
             });
-        } else if(document.getElementById("telefone").value.length < 10){
+        } else if(document.getElementById("telefone1").value.length < 10){
             iziToast.error({
                 title: 'Ops...',
-                message: 'Você precisa definir um telefone válido',
+                message: 'Você precisa o definir 1º telefone',
                 position: 'topRight',
             });
-        } else if(document.getElementById("password").value.length < 8){
-                iziToast.error({
-                    title: 'Ops...',
-                    message: 'As senhas está muito pequena. Mínimo 8 caracteres.',
-                    position: 'topRight',
-                });                                
-        } else if(document.getElementById("password").value != document.getElementById("password_confirmation").value){
-            iziToast.error({
-                title: 'Ops...',
-                message: 'As senhas não coincidem',
-                position: 'topRight',
-            });
-        } else{
+        } else {
             swal({
             title: "Tem certeza disso?",
             text: "Você está editando permanentemente esse usuário!",

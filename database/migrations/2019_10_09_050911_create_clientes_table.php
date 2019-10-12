@@ -26,6 +26,9 @@ class CreateClientesTable extends Migration
             $table->string('nome');
             $table->string('sobrenome');
             $table->string('profissao');
+            $table->string('estado_civil');
+            $table->string('telefone1');
+            $table->string('telefone2');
             $table->string('genero');
             $table->string('foto_path')->nullable();
             $table->tinyInteger('status');

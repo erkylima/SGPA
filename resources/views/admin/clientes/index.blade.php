@@ -37,7 +37,7 @@ Clientes
         <p class="section-lead">
             Você pode gerenciar todos os usuarios, tal como editar, apagar e mais.
         </p>
-        <p class="text-uppercase">{{ crypt(2,'SGPA')}}</p>
+        <p class="text-uppercase">{{ crypt(7,'SGPA')}}</p>
         <div class="row">
             <div class="col-12">
             <div class="card mb-0">
@@ -48,7 +48,7 @@ Clientes
                             <a class="nav-link {{ is_null($status) ? 'active' : ''}}" href="{{route('painel.clientes')}}">Todos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ (!is_null($status) && $status == 0) ? 'active' : ''}}" href="{{route('painel.clientes',['status'=>0])}}">Concluido</a>
+                                <a data-toggle="tooltip" data-placement="top" title="Clientes com cadastro concluído." class="nav-link {{ (!is_null($status) && $status == 0) ? 'active' : ''}}" href="{{route('painel.clientes',['status'=>0])}}">Concluido</a>
                             </li>
                             <li class="nav-item">
                             <a class="nav-link {{ (!is_null($status) && $status == 1) ? 'active' : ''}}" href="{{route('painel.clientes',['status'=>1])}}">Rascunho</a>
@@ -62,14 +62,12 @@ Clientes
                         </ul>
                     </div>
                 <div class="float-right">
-                    <form id="blocopesquisa">
                     <div class="input-group">
                         <input id="search" type="text" class="form-control" placeholder="Pesquisar">
                         <div class="input-group-append">
                         <button id="botaosearch" class="btn btn-primary"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
-                    </form>
                 </div>
                 </div>                
             </div>

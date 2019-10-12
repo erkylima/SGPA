@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clientes;
+use App\Models\Enderecos;
+use App\Models\Documentos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -162,35 +164,74 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         $cliente = new Clientes();
+        $documento = new Documentos();
+        $endereco = new Enderecos();
         if(auth()->user()->can('create-cliente'))
         {
             $request->validate([
-                'name' => 'required|min:3|max:255',
-                'email' => 'required|email|unique:users',
-                'senha' => 'required|min:8|confirmed'
-            ]);
-            $cliente->name=$request->name;
-            $cliente->genero=$request->genero;
+            //     'name' => 'required|min:3|max:255',                
+                'email' => 'required|email|unique:clientes',
+            //     // 'perfil'=>'image|mimes:jpg|max:2048',            
+            ]);            
+            $cliente->chave_acesso = 0;
+            $cliente->agenciador_id=auth()->user()->id;
+            $cliente->nome=$request->name;
+            $cliente->sobrenome=$request->sobrenome;
             $cliente->email=$request->email;
-            $cliente->telefone=$request->telefone;
-            $cliente->cpf=$request->cpf;
-            $cliente->nacionalidade=$request->nacionalidade;
+            $cliente->profissao=$request->profissao;
+            $cliente->genero=$request->genero;
             $cliente->estado_civil=$request->estado_civil;
-            $cliente->rg=$request->rg;
-            $cliente->orgao=$request->orgao;
-            $cliente->rua=$request->rua;
-            $cliente->complemento=$request->complemento;
-            $cliente->numero=$request->numero;
-            $cliente->bairro=$request->bairro;
-            $cliente->cep=$request->cep;
-            $cliente->cidade=$request->cidade;
-            $cliente->estado=$request->estado;                                                
-            $cliente->password=Hash::make($request->senha);                         
-                 
+            $cliente->telefone1=$request->telefone1;
+            $cliente->telefone2=$request->telefone2;
+            $cliente->status=$request->status;
             $cliente->save();
-            return redirect()->back()->with('message','Usuário criado com sucesso');
+            $cliente->chave_acesso = crypt($cliente->id,'SGPA');
+            if($request->perfil){
+                try {
+                    $namePerfil = "perfil." . request()->perfil->getClientOriginalExtension();
+                    $caminhoPerfil = 'assets/img/clientes/'. $cliente->id . '/';
+                    $cliente->foto_path = $caminhoPerfil . $namePerfil;
+                    request()->perfil->move(public_path($caminhoPerfil),$namePerfil);
+                } catch (\Throwable $th) {
+                    return back()->with('falha','A falha foi' . $th->getMessage());
+                }
+                
+            }
+            $cliente->save();
+            // Documentos
+            $documento->cliente_id = $cliente->id;
+            $documento->rg=$request->rg;
+            if($request->foto_rg){
+                $nameRg = "rg" . $documento->rg . '.' . request()->foto_rg->getClientOriginalExtension();
+                $caminhoRg = 'assets/img/clientes/'. $cliente->id . '/';
+                $documento->rg_path = $caminhoRg . $nameRg;
+                request()->foto_rg->move(public_path($caminhoRg),$nameRg);
+            }
+            $documento->orgao=$request->orgao;
+            $documento->cpf=$request->cpf;
+            if($request->foto_cpf){
+                $nameCpf = "cpf" . $documento->cpf . '.' . request()->foto_cpf->getClientOriginalExtension();
+                $caminhoCpf = 'assets/img/clientes/'. $cliente->id . '/';
+                $documento->cpf_path = $caminhoCpf . $nameCpf;
+                request()->foto_cpf->move(public_path($caminhoCpf),$nameCpf);
+            }
+            // Endereço
+            $endereco->cliente_id = $cliente->id;
+            $endereco->bairro=$request->bairro;
+            $endereco->cidade=$request->cidade;
+            $endereco->estado=$request->estado;                                                
+            $endereco->rua=$request->rua;
+            $endereco->pais=$request->pais;
+            $endereco->numero=$request->numero;
+            $endereco->complemento=$request->complemento;
+            $endereco->cep=$request->cep;                        
+                 
+            $documento->save();
+            $endereco->save();
+
+            return back()->with('success','Cliente criado com sucesso');
         } else {
-            return redirect()->back()->with('message','Você não tem permissão para criar novo cliente');
+            return back()->with('falha','Você não tem permissão para criar novo cliente');
         }
     }
 
