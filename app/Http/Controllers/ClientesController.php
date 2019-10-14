@@ -112,7 +112,7 @@ class ClientesController extends Controller
                             <a href=\"". route('painel.clientes.edit',$cliente->id) ."\">Editar</a>
                             <div class=\"bullet\"></div>
                             <a href=\"javascript:void(0);\" class=\"text-danger\" onclick=\"document.getElementById('form').submit();\" >                            
-                            delete
+                            Apagar
                             </a>
                             <form action=\"". route('painel.clientes.destroy',$cliente->id) ."\" id=\"form\" method=\"post\">
                                 " . csrf_field() . "

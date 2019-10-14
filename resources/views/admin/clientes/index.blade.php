@@ -25,7 +25,7 @@ Clientes
     <div class="section-header">
         <h1>Clientes</h1>
         <div class="section-header-button">
-            <a href="{{ route('painel.clientes.create')}}" class="btn btn-primary">Add Novo</a>
+            <a href="{{ route('painel.clientes.novo')}}" class="btn btn-primary">Add Novo</a>
         </div>
         <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{route('admin.index')}}">Dashboard</a></div>
@@ -35,9 +35,8 @@ Clientes
     <div class="section-body">
         <h2 class="section-title">Clientes</h2>
         <p class="section-lead">
-            Você pode gerenciar todos os usuarios, tal como editar, apagar e mais.
+            Você pode gerenciar todos os clientes, tal como editar, apagar e mais.
         </p>
-        <p class="text-uppercase">{{ crypt(9,'SGPA')}}</p>
         <div class="row">
             <div class="col-12">
             <div class="card mb-0">

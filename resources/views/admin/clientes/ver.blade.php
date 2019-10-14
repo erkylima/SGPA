@@ -20,9 +20,9 @@ Visualizar Cliente
         </div>
     </div>
     <div class="section-body">
-        <h2 class="section-title">Hi, Ujang!</h2>
+        <h2 class="section-title">Cliente: {{ $cliente->nome }}</h2>
         <p class="section-lead">
-        Change information about yourself on this page.
+            Visualização geral do cliente
         </p>
 
         <div class="row mt-sm-4">
@@ -33,12 +33,12 @@ Visualizar Cliente
                 <div class="profile-widget-items">
                 <div class="profile-widget-item">
                     <div class="profile-widget-item-label">Processos</div>
-                    <div class="profile-widget-item-value">187</div>
+                    <div class="profile-widget-item-value">2</div>
                 </div>
-                <div class="profile-widget-item">
+                {{-- <div class="profile-widget-item">
                     <div class="profile-widget-item-label">Ações</div>
                     <div class="profile-widget-item-value">6,8K</div>
-                </div>
+                </div> --}}
                 <div class="profile-widget-item">
                     <div class="profile-widget-item-label">Following</div>
                     <div class="profile-widget-item-value">2,1K</div>
@@ -46,11 +46,58 @@ Visualizar Cliente
                 </div>
             </div>
             <div class="profile-widget-description">
-                <div class="profile-widget-name">Ujang Maman <div class="text-muted d-inline font-weight-normal"><div class="slash"></div> Web Developer</div></div>
-                Ujang maman is a superhero name in <b>Indonesia</b>, especially in my family. He is not a fictional character but an original hero in my family, a hero for his children and for his wife. So, I use the name as a user in this template. Not a tribute, I'm just bored with <b>'John Doe'</b>.
+                <div class="profile-widget-name">{{ $cliente->nome}} {{ $cliente->sobrenome}} <div class="text-muted d-inline font-weight-normal"><div class="slash"></div> {{ $cliente->profissao }}</div></div>
+                <div class="font-weight-bold mb-2">Documentos</div>                
+                <div class="profile-widget-items">
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">CPF</div>
+                        <div class="profile-widget-item-value">{{ $documento->cpf }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Identidade</div>
+                        <div class="profile-widget-item-value">{{ $documento->rg }}</div>
+                    </div>
+                </div>
+                <div class="font-weight-bold mb-2">Endereço</div>                
+                <div class="profile-widget-items">
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Cidade</div>
+                        <div class="profile-widget-item-value">{{ $endereco->cidade }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Estado</div>
+                        <div class="profile-widget-item-value">{{ $endereco->estado }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">CEP</div>
+                        <div class="profile-widget-item-value">{{ $endereco->cep }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">País</div>
+                        <div class="profile-widget-item-value">{{ $endereco->pais }}</div>
+                    </div>
+                </div>
+                <div class="profile-widget-items">
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Rua</div>
+                        <div class="profile-widget-item-value">{{ $endereco->rua }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Numero</div>
+                        <div class="profile-widget-item-value">{{ $endereco->numero }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Complemento</div>
+                        <div class="profile-widget-item-value">{{ $endereco->complemento }}</div>
+                    </div>
+                    <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Bairro</div>
+                        <div class="profile-widget-item-value">{{ $endereco->bairro }}</div>
+                    </div>
+                </div>                
             </div>
             <div class="card-footer text-center">
-                <div class="font-weight-bold mb-2">Follow Ujang On</div>
+                <div class="font-weight-bold mb-2">Anotações</div>
                 <a href="#" class="btn btn-social-icon btn-facebook mr-1">
                 <i class="fab fa-facebook-f"></i>
                 </a>
@@ -68,60 +115,100 @@ Visualizar Cliente
         </div>
         <div class="col-12 col-md-12 col-lg-7">
             <div class="card">
+                <div class="card-header">
+                    <h4>Todos Processos</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                        <th class="text-center pt-2">
+                            #
+                        </th>
+                        <th>Titulo</th>
+                        <th>Tipo</th>
+                        <th>Agenciador</th>
+                        <th>Status</th>
+                        </tr>
+                        <tr>
+                        <td>
+                            1
+                        </td>
+                        <td>Tiroteio
+                            <div class="table-links">
+                            <a href="#">Ver</a>
+                            <div class="bullet"></div>
+                            <a href="#">Editar</a>
+                            <div class="bullet"></div>
+                            <a href="#" class="text-danger">Apagar</a>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="#">Tutorial</a>
+                        </td>
+                        <td>
+                            <a href="#">
+                            <img alt="image" src="{{ asset('assets/img/avatar/avatar-5.png')}}" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
+                            </a>
+                        </td>
+                        <td><div class="badge badge-primary">Concluído</div></td>
+                        </tr>
+                        
+                    </table>
+                    </div>
+                    <div class="float-right">
+                    <nav>
+                        <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                        </ul>
+                    </nav>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
             <form method="post" class="needs-validation" novalidate="">
                 <div class="card-header">
-                <h4>Edit Profile</h4>
+                <h4>Enviar email</h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                    <div class="form-group col-md-6 col-12">
-                        <label>First Name</label>
-                        <input type="text" class="form-control" value="Ujang" required="">
-                        <div class="invalid-feedback">
-                        Please fill in the first name
+                        <div class="form-group col-12">
+                            <label for="assunto">Assunto</label>
+                            <input autofocus class="form-control" type="text" name="assunto" id="assunto">
+                            
                         </div>
-                    </div>
-                    <div class="form-group col-md-6 col-12">
-                        <label>Last Name</label>
-                        <input type="text" class="form-control" value="Maman" required="">
-                        <div class="invalid-feedback">
-                        Please fill in the last name
-                        </div>
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="form-group col-md-7 col-12">
-                        <label>Email</label>
-                        <input type="email" class="form-control" value="ujang@maman.com" required="">
-                        <div class="invalid-feedback">
-                        Please fill in the email
-                        </div>
-                    </div>
-                    <div class="form-group col-md-5 col-12">
-                        <label>Phone</label>
-                        <input type="tel" class="form-control" value="">
-                    </div>
                     </div>
                     <div class="row">
                     <div class="form-group col-12">
-                        <label>Bio</label>
-                        <textarea class="form-control summernote-simple">Ujang maman is a superhero name in <b>Indonesia</b>, especially in my family. He is not a fictional character but an original hero in my family, a hero for his children and for his wife. So, I use the name as a user in this template. Not a tribute, I'm just bored with <b>'John Doe'</b>.</textarea>
+                        <label>Mensagem</label>
+                        <textarea name="mensagem" id="mensagem" class="form-control summernote-simple"></textarea>
                     </div>
-                    </div>
-                    <div class="row">
-                    <div class="form-group mb-0 col-12">
-                        <div class="custom-control custom-checkbox">
-                        <input type="checkbox" name="remember" class="custom-control-input" id="newsletter">
-                        <label class="custom-control-label" for="newsletter">Subscribe to newsletter</label>
-                        <div class="text-muted form-text">
-                            You will get new information about products, offers and promotions
-                        </div>
-                        </div>
-                    </div>
-                    </div>
+                    </div>                    
                 </div>
+                
                 <div class="card-footer text-right">
-                <button class="btn btn-primary">Save Changes</button>
+                <button class="btn btn-primary">Enviar</button>
                 </div>
             </form>
             </div>
@@ -135,6 +222,7 @@ Visualizar Cliente
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 <script src="{{ asset('assets/modules/sweetalert/sweetalert.min.js') }}"></script>    
 <script src="{{ asset('assets/modules/izitoast/js/iziToast.min.js') }}"></script>    
+<script src="{{ asset('assets/modules/summernote/summernote.js') }}"></script>    
 
 <script>
     
@@ -144,5 +232,7 @@ Visualizar Cliente
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/modules/sweetalert/sweetalert.min.js') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/izitoast/css/iziToast.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/modules/summernote/summernote.css') }}">
+
 @endsection
 

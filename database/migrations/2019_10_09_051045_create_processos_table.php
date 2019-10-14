@@ -17,22 +17,10 @@ class CreateProcessosTable extends Migration
             $table->bigIncrements('id');
             $table->string('titulo');
             $table->string('descricao');
+            $table->tinyInteger('agenciador');
+            $table->double('valor');
             $table->timestamps();
-        });
-
-        Schema::create('acoes', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('processo_id');
-            $table->foreign('processo_id')
-            ->references('id')
-            ->on('processos')
-            ->onDelete('cascade');
-
-            $table->string('titulo');
-            $table->string('descricao');
-            $table->tinyInteger('tipo');
-            $table->timestamps();
-        });
+        });        
 
         Schema::create('cliente_has_processo', function (Blueprint $table) {
             $table->unsignedInteger('cliente_id');
