@@ -53,8 +53,8 @@ class CreateClientesTable extends Migration
 
         // Criar tabela endereço
         Schema::create('enderecos',function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('cliente_id');
+            // $table->bigIncrements('id');
+            $table->unsignedInteger('cliente_id')->primary();
             $table->foreign('cliente_id')
                 ->references('id')
                 ->on('cliente')

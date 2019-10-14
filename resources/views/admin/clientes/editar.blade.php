@@ -1,7 +1,7 @@
 @extends('layouts.admin-master')
 
 @section('title')
-Novo Cliente
+Editar Cliente
 @endsection
 
 @section('content')
@@ -10,20 +10,20 @@ Novo Cliente
         <div class="section-header-back">
         <a href="{{auth()->user()->can('ver-clientes') ? route('painel.clientes') : route('admin.index')}}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
         </div>
-        <h1>Criar Novo Cliente</h1>
+        <h1>Editar Cliente</h1>
         <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('admin.index') }}">Dashboard</a></div>
         @if(auth()->user()->can('ver-clientes')) 
         <div class="breadcrumb-item"><a href="{{route('painel.clientes')}}">Clientes</a></div>
         @endif
-        <div class="breadcrumb-item">Criar Novo Cliente</div>
+        <div class="breadcrumb-item">Editar Cliente</div>
         </div>
     </div>
 
     <div class="section-body">
-        <h2 class="section-title">Novo Cliente</h2>
+        <h2 class="section-title">Editar Cliente - {{ $cliente->nome }}</h2>
         <p class="section-lead">
-        Nessa página você pode criar um novo cliente e preencher seus campos.
+        Nessa página você pode editar o cliente e repreencher seus campos.
         </p>
         @if(session()->get('success'))
         <div class="alert alert-success m-3" role="alert">
@@ -41,11 +41,12 @@ Novo Cliente
                     <h4>Preencha o Formulário</h4>                    
                 </div>
                 <div class="card-body">
-                    <form name="criar" action="{{ route('painel.clientes.store')}}" method="post" enctype="multipart/form-data">
+                    <form name="editar" action="{{ route('painel.clientes.update',$cliente->id)}}" method="post" enctype="multipart/form-data">
+                        @method('PUT')
                         {{ csrf_field() }}     
                         <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
                         <div class="form-group row mb-4 justify-content-center">
-                            <div class="custom-file  col-lg-4 col-md-12">
+                            <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file  col-lg-4 col-md-12">
                                 <input type="file" class="custom-file-input" id="perfil" name="perfil">
                                 <label class="custom-file-label" for="perfil">Escolher arquivo</label>
                             </div>
@@ -54,14 +55,14 @@ Novo Cliente
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="name">Nome (*)</label>
                                     
-                                <input type="text" name="name" id="name" class="form-control" value="" tabindex="1" placeholder="Digite o nome do cliente">
+                            <input type="text" name="name" id="name" class="form-control" value="{{$cliente->nome}}" tabindex="1" placeholder="Digite o nome do cliente">
                                 <div class="invalid-feedback">
                                     <p>{{ $errors->first('name') }}</p>
                                 </div>                                    
                             </div>
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="sobrenome">Sobrenome (*)</label>                                    
-                                <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="" tabindex="1" placeholder="Digite o sobrenome do cliente">
+                                <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="{{$cliente->sobrenome}}" tabindex="1" placeholder="Digite o sobrenome do cliente">
                                 <div class="invalid-feedback">
                                     <p>{{ $errors->first('sobrenome') }}</p>
                                 </div>
@@ -71,7 +72,7 @@ Novo Cliente
                         <div class="form-row row mb-4 justify-content-center">
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="email">Email (*)</label>
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="">
+                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="{{$cliente->email}}">
                                 <div class="invalid-feedback">
                                     {{ $errors->first('email') }}
                                 </div>
@@ -79,7 +80,7 @@ Novo Cliente
 
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="profissao">Profissão (*)</label>                                    
-                                <input type="text" name="profissao" id="profissao" class="form-control" value="" tabindex="1" placeholder="Digite a profissão do cliente">
+                                <input type="text" name="profissao" id="profissao" class="form-control" value="{{$cliente->profissao}}" tabindex="1" placeholder="Digite a profissão do cliente">
                                 <div class="invalid-feedback">
                                     <p>{{ $errors->first('sobrenome') }}</p>
                                 </div>                                    
@@ -90,21 +91,21 @@ Novo Cliente
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="genero" class="control-label">Genero (*)</label>
                                 <select class="form-control" id="genero" tabindex="10" name="genero">
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Feminino</option>
-                                    <option value="O">Outro</option>
+                                    <option {{ $cliente->genero == 'M' ? ' selected' : '' }} value="M">Masculino</option>
+                                    <option {{ $cliente->genero == 'F' ? ' selected' : '' }} value="F">Feminino</option>
+                                    <option {{ $cliente->genero == 'O' ? ' selected' : '' }} value="O">Outro</option>
                                 </select>
                             </div>
 
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="estado_civil">Estado Civil (*)</label>
                                     <select class="form-control" id="estado_civil" tabindex="2" name="estado_civil">
-                                            <option value="Solteiro">Solteiro</option>
-                                            <option value="Casado">Casado</option>
-                                            <option value="Separado">Separado</option>
-                                            <option value="Divorciado">Divorciado</option>
-                                            <option value="Viúvo">Viúvo</option>
-                                            <option value="Amasiado">Amasiado</option>
+                                            <option {{ $cliente->genero == 'Solteiro' ? ' selected' : '' }} value="Solteiro">Solteiro</option>
+                                            <option {{ $cliente->genero == 'Casado' ? ' selected' : '' }} value="Casado">Casado</option>
+                                            <option {{ $cliente->genero == 'Separado' ? ' selected' : '' }} value="Separado">Separado</option>
+                                            <option {{ $cliente->genero == 'Divorciado' ? ' selected' : '' }} value="Divorciado">Divorciado</option>
+                                            <option {{ $cliente->genero == 'Viúvo' ? ' selected' : '' }} value="Viúvo">Viúvo</option>
+                                            <option {{ $cliente->genero == 'Amasiado' ? ' selected' : '' }} value="Amasiado">Amasiado</option>
                                     </select>                    
                             </div>
                         </div> 
@@ -113,29 +114,29 @@ Novo Cliente
                             <div class="form-group col-lg-3 col-md-12">
                                 <label data-toggle="tooltip" data-placement="top" title="Clique em Foto RG para enviar o arquivo do RG." for="rg">RG (*)</label>
                                 <div class="input-group">
-                                    <div class="custom-file">
+                                    <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file">
                                         <input type="file" placeholder="Foto" class="custom-file-input" id="foto_rg" name="foto_rg">
                                         <label class="custom-file-label" for="foto_rg">Foto RG</label>
                                     </div>
-                                    <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
+                                    <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="{{$documento->rg}}">
                                 </div>                    
                             </div>
             
                             <div class="form-group col-lg-2 col-md-12">
                                 <label for="orgao">Orgão (*)</label>
                                 <div class="input-group">
-                                    <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="">
+                                    <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="{{$documento->orgao}}">
                                 </div>                    
                             </div>
             
                             <div class="form-group col-lg-3 col-md-12">
                                 <label data-toggle="tooltip" data-placement="top" title="Clique em Foto CPF para enviar o arquivo do CPF." for="cpf">CPF (*)</label>
                                 <div class="input-group">
-                                    <div class="custom-file">
+                                    <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file">
                                         <input type="file" placeholder="Foto" class="custom-file-input" id="foto_cpf" name="foto_cpf">
                                         <label class="custom-file-label" for="foto_cpf">Foto CPF</label>
                                     </div>                                    
-                                    <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
+                                    <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="{{$documento->cpf}}">
                                 </div>                                        
                             </div>
                             
@@ -146,48 +147,48 @@ Novo Cliente
                             <div class="form-group col-lg-3 col-md-12">
                                 <label for="bairro">Bairro (*)</label>
                                 <div class="input-group">
-                                    <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="">
+                                    <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="{{$endereco->bairro}}">
                                 </div>                    
                             </div>
             
                             <div class="form-group col-lg-3 col-md-12">
                                 <label for="cidade">Cidade (*)</label>
                                 <div class="input-group">
-                                <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="">
+                                <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="{{$endereco->cidade}}">
                                 </div>                    
                             </div>
             
                             <div class="form-group col-lg-2 col-md-12">
                                 <label for="estado">Estado (*)</label>
-                                    <select class="form-control" id="estado" tabindex="2" name="estado">
-                                        <option  value="AC">Acre</option>
-                                        <option value="AL">Alagoas</option>
-                                        <option value="AP">Amapá</option>
-                                        <option value="AM">Amazonas</option>
-                                        <option value="BA">Bahia</option>
-                                        <option value="CE">Ceará</option>
-                                        <option value="DF">Distrito Federal</option>
-                                        <option value="ES">Espírito Santo</option>
-                                        <option value="GO">Goiás</option>
-                                        <option value="MA">Maranhão</option>
-                                        <option value="MT">Mato Grosso</option>
-                                        <option value="MS">Mato Grosso do Sul</option>
-                                        <option value="MG">Minas Gerais</option>
-                                        <option value="PA">Pará</option>
-                                        <option value="PB">Paraíba</option>
-                                        <option value="PR">Paraná</option>
-                                        <option value="PE" selected>Pernambuco</option>
-                                        <option value="PI">Piauí</option>
-                                        <option value="RJ">Rio de Janeiro</option>
-                                        <option value="RN">Rio Grande do Norte</option>
-                                        <option value="RS">Rio Grande do Sul</option>
-                                        <option value="RO">Rondônia</option>
-                                        <option value="RR">Roraima</option>
-                                        <option value="SC">Santa Catarina</option>
-                                        <option value="SP">São Paulo</option>
-                                        <option value="SE">Sergipe</option>
-                                        <option value="TO">Tocantins</option>
-                                        <option value="EX">Estrangeiro</option>
+                                    <select class="form-control" id="estado" tabindex="2" name="estado">                                        
+                                        <option {{ $endereco->estado == 'AC' ? ' selected' : '' }} value="AC">Acre</option>
+                                        <option {{ $endereco->estado == 'AL' ? ' selected' : '' }} value="AL">Alagoas</option>
+                                        <option {{ $endereco->estado == 'AP' ? ' selected' : '' }} value="AP">Amapá</option>
+                                        <option {{ $endereco->estado == 'AM' ? ' selected' : '' }} value="AM">Amazonas</option>
+                                        <option {{ $endereco->estado == 'BA' ? ' selected' : '' }} value="BA">Bahia</option>
+                                        <option {{ $endereco->estado == 'CE' ? ' selected' : '' }} value="CE">Ceará</option>
+                                        <option {{ $endereco->estado == 'DF' ? ' selected' : '' }} value="DF">Distrito Federal</option>
+                                        <option {{ $endereco->estado == 'ES' ? ' selected' : '' }} value="ES">Espírito Santo</option>
+                                        <option {{ $endereco->estado == 'GO' ? ' selected' : '' }} value="GO">Goiás</option>
+                                        <option {{ $endereco->estado == 'MA' ? ' selected' : '' }} value="MA">Maranhão</option>
+                                        <option {{ $endereco->estado == 'MT' ? ' selected' : '' }} value="MT">Mato Grosso</option>
+                                        <option {{ $endereco->estado == 'MS' ? ' selected' : '' }} value="MS">Mato Grosso do Sul</option>
+                                        <option {{ $endereco->estado == 'MG' ? ' selected' : '' }} value="MG">Minas Gerais</option>
+                                        <option {{ $endereco->estado == 'PA' ? ' selected' : '' }} value="PA">Pará</option>
+                                        <option {{ $endereco->estado == 'PB' ? ' selected' : '' }} value="PB">Paraíba</option>
+                                        <option {{ $endereco->estado == 'PR' ? ' selected' : '' }} value="PR">Paraná</option>
+                                        <option {{ $endereco->estado == 'PE' ? ' selected' : '' }} value="PE">Pernambuco</option>
+                                        <option {{ $endereco->estado == 'PI' ? ' selected' : '' }} value="PI">Piauí</option>
+                                        <option {{ $endereco->estado == 'RJ' ? ' selected' : '' }} value="RJ">Rio de Janeiro</option>
+                                        <option {{ $endereco->estado == 'RN' ? ' selected' : '' }} value="RN">Rio Grande do Norte</option>
+                                        <option {{ $endereco->estado == 'RS' ? ' selected' : '' }} value="RS">Rio Grande do Sul</option>
+                                        <option {{ $endereco->estado == 'RO' ? ' selected' : '' }} value="RO">Rondônia</option>
+                                        <option {{ $endereco->estado == 'RR' ? ' selected' : '' }} value="RR">Roraima</option>
+                                        <option {{ $endereco->estado == 'SC' ? ' selected' : '' }} value="SC">Santa Catarina</option>
+                                        <option {{ $endereco->estado == 'SP' ? ' selected' : '' }} value="SP">São Paulo</option>
+                                        <option {{ $endereco->estado == 'SE' ? ' selected' : '' }} value="SE">Sergipe</option>
+                                        <option {{ $endereco->estado == 'TO' ? ' selected' : '' }} value="TO">Tocantins</option>
+                                        <option {{ $endereco->estado == 'EX' ? ' selected' : '' }} value="EX">Estrangeiro</option>
                                     </select>                    
                             </div>                        
                         </div>
@@ -196,7 +197,7 @@ Novo Cliente
                             <div class="form-group col-lg-5 col-md-12">
                                 <label for="rua">Rua (*)</label>
                                 <div class="input-group">
-                                    <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="">
+                                    <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="{{$endereco->rua}}">
                                 </div>
                                 <div class="invalid-feedback">
                                 {{ $errors->first('rua') }}
@@ -386,7 +387,7 @@ Novo Cliente
                             <div class="form-group col-lg-1 col-md-12">
                                 <label for="numero">Número (*)</label>
                                 <div class="input-group">
-                                    <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="">
+                                    <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="{{$endereco->numero}}">
                                 </div>
                                 <div class="invalid-feedback">
                                 {{ $errors->first('numero') }}
@@ -398,7 +399,7 @@ Novo Cliente
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="complemento">Complemento (*)</label>
                                 <div class="input-group">                    
-                                    <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="" >
+                                    <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="{{$endereco->complemento}}" >
                                     <div class="invalid-feedback">
                                         {{ $errors->first('complemento') }}
                                     </div>
@@ -407,7 +408,7 @@ Novo Cliente
                             <div class="form-group col-lg-4 col-md-12">
                                 <label for="cep">CEP (*)</label>
                                 <div class="input-group">
-                                    <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="">
+                                    <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="{{$endereco->cep}}">
                                 </div>
                                 <div class="invalid-feedback">
                                 {{ $errors->first('cep') }}
@@ -424,7 +425,7 @@ Novo Cliente
                                             <i class="fas fa-phone"></i>
                                         </div>
                                     </div>
-                                    <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="" >
+                                    <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="{{$cliente->telefone1}}" >
                                     <div class="invalid-feedback">
                                         {{ $errors->first('fone') }}
                                     </div>
@@ -439,7 +440,7 @@ Novo Cliente
                                             <i class="fas fa-phone"></i>
                                         </div>
                                     </div>
-                                    <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="" >
+                                    <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="{{$cliente->telefone2}}" >
                                     <div class="invalid-feedback">
                                         {{ $errors->first('fone') }}
                                     </div>
@@ -450,9 +451,9 @@ Novo Cliente
                             <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status</label>
                             <div class="col-sm-12 col-md-4">
                                 <select name="status" class="form-control selectric">
-                                    <option value="1">Rascunho</option>
-                                    <option value="0">Concluído</option>
-                                    <option value="2">Pendente</option>
+                                    <option {{ $cliente->status == '1' ? ' selected' : '' }} value="1">Rascunho</option>
+                                    <option {{ $cliente->status == '0' ? ' selected' : '' }} value="0">Concluído</option>
+                                    <option {{ $cliente->status == '2' ? ' selected' : '' }} value="2">Pendente</option>
                                 </select>
                             </div>
                         </div>                                                        
@@ -460,7 +461,7 @@ Novo Cliente
                         
                     </form>
                     <div class="row offset-8">
-                        <button class="btn btn-lg btn-info" onclick="criarUser()" type="button" tabindex="16"><i class="fas fa-plus"></i> Criar Cliente</button>
+                        <button class="btn btn-lg btn-info" onclick="editarUser()" type="button" tabindex="16"><i class="fas fa-user-edit"></i> Editar Cliente</button>
                     </div> 
                 </div>
             </div>
@@ -479,7 +480,7 @@ Novo Cliente
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
     
-    function criarUser(){      
+    function editarUser(){      
         if(document.getElementById("name").value.length < 1 ){
             iziToast.error({
                 title: 'Ops...',
@@ -554,19 +555,19 @@ Novo Cliente
             });
         } else {
             swal({
-            title: "Os dados estão corretos?",
-            text: "Você está adicionando um novo cliente!",
+            title: "Tem certeza disso?",
+            text: "Você está editando esse cliente permanentemente!",
             icon: "warning",
             buttons: true,
             dangerMode: true,
             })
             .then((willDelete) => {
             if (willDelete) {
-                swal("Tentando criar usuário", {
+                swal("Tentando atualizar dados do cliente", {
 
                 icon: "success",
                 });
-                document.criar.submit();                    
+                document.editar.submit();                    
             } else {
                 swal("Você cancelou a ação!");
             }

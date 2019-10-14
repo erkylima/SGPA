@@ -9,7 +9,8 @@ Route::get('home', function() {
 Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
     Route::resource('clientes', 'ClientesController', [
         'names' => [
-            'index' => 'clientes'
+            'index' => 'clientes',
+            'show' => 'clientes.ver'
         ]
     ]);
     Route::get('cliente_nome', 'ClientesController@cliente_nome')->name('cliente_nome');

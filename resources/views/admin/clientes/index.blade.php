@@ -37,7 +37,7 @@ Clientes
         <p class="section-lead">
             Você pode gerenciar todos os usuarios, tal como editar, apagar e mais.
         </p>
-        <p class="text-uppercase">{{ crypt(7,'SGPA')}}</p>
+        <p class="text-uppercase">{{ crypt(9,'SGPA')}}</p>
         <div class="row">
             <div class="col-12">
             <div class="card mb-0">
