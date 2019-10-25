@@ -14,8 +14,6 @@ class DashboardController extends Controller
         $user = User::find(1);
         // $user->notify(new InvoicePaid('INVOICE'));
 
-
-
         return view('admin.dashboard.index');
     }
 }

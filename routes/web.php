@@ -30,6 +30,12 @@ Route::name('admin.')->prefix('sistema')->middleware('auth')->group(function() {
     ]);
 });
 
+\Event::listen('Illuminate\Database\Events\QueryExecuted', function ($query) {
+    Log::info( json_encode($query->sql) );
+    Log::info( json_encode($query->bindings) );
+    Log::info( json_encode($query->time)   );
+});
+
 Route::middleware('auth')->get('logout', function() {
     Auth::logout();
     return redirect(route('login'))->withInfo('You have successfully logged out!');
