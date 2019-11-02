@@ -25,9 +25,8 @@ class ClientesController extends Controller
                                 ->paginate(15);
         }else{
             $clientes = DB::table('clientes')
-                                ->join('users','users.id','=','clientes.agenciador_id')
-                                ->select('users.name','users.avatar','clientes.*')
-                                ->paginate(1);
+                                ->select('clientes.*')
+                                ->paginate(15);
         }
         $output = '';
         if($request->ajax()){
@@ -39,18 +38,18 @@ class ClientesController extends Controller
                     ->where('nome','like','%'.$query.'%')
                     ->orWhere('sobrenome','like','%'.$query.'%')
                     ->orWhere('profissao','like','%'.$query.'%')
-                    ->join('users','users.id','=','clientes.agenciador_id')
+                    ->orWhere('cpf','like','%'.$query.'%')
                     ->orderBy('nome','asc')
-                    ->select('users.name','users.avatar','clientes.*')
+                    ->select('clientes.*')
                     ->paginate(15);
                 }else{
                     $data = DB::table('clientes')
                     ->where('nome','like','%'.$query.'%')
                     ->orWhere('sobrenome','like','%'.$query.'%')
                     ->orWhere('profissao','like','%'.$query.'%')
-                    ->join('users','users.id','=','clientes.agenciador_id')
+                    ->orWhere('cpf','like','%'.$query.'%')
                     ->orderBy('nome','asc')
-                    ->select('users.name','users.avatar','clientes.*')
+                    ->select('clientes.*')
                     ->paginate(15);
                 }
                 
@@ -58,13 +57,11 @@ class ClientesController extends Controller
                 if(!is_null($request->query('status'))){
                     $data = DB::table('clientes')
                             ->where('status',$request->query('status'))
-                            ->join('users','users.id','=','clientes.agenciador_id')
-                            ->select('users.name','users.avatar','clientes.*')
+                            ->select('clientes.*')
                             ->paginate(15);
                 }else{
                     $data = DB::table('clientes')
-                    ->join('users','users.id','=','clientes.agenciador_id')
-                    ->select('users.name','users.avatar','clientes.*')
+                    ->select('clientes.*')
                     ->paginate(15);
                 }
 
@@ -76,7 +73,6 @@ class ClientesController extends Controller
                     </th>
                     <th>Nome</th>
                     <th>Profissão</th>
-                    <th>Agenciador</th>
                     <th>Criado em</th>
                     <th>Status</th>
                 </tr>";
@@ -121,7 +117,6 @@ class ClientesController extends Controller
                         </div>
                     </td>
                     <td>{$cliente->profissao}</td>
-                    <td><img alt=\"image\" src=" . asset($cliente->avatar) . " class=\"rounded-circle\" width=\"35\" data-toggle=\"title\" title=\"\"> <div class=\"d-inline-block ml-1\">{$cliente->name}</div></td>
                     <td>{$dia} de {$mes} de {$ano}</td>
                     <td>{$status}</td>
                     </tr>";
@@ -170,26 +165,47 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         $cliente = new Clientes();
-        $documento = new Documentos();
         $endereco = new Enderecos();
         if(auth()->user()->can('create-cliente'))
         {
             $request->validate([
-            //     'name' => 'required|min:3|max:255',                
-                'email' => 'required|email|unique:clientes',
-            //     // 'perfil'=>'image|mimes:jpg|max:2048',            
+                // 'name' => 'required|min:3|max:255',                
+                'cpf' => 'unique:clientes',
+                // 'perfil'=>'image|mimes:jpg|max:2048',            
             ]);            
+            if($request->whats1 == 'on'){
+                $request->whats1 = 1;
+            }else{
+                $request->whats1 = 0;
+            }
+            if($request->whats2 == 'on'){
+                $request->whats2 = 1;
+            }else{
+                $request->whats2 = 0;
+            }
             $cliente->chave_acesso = 0;
-            $cliente->agenciador_id=auth()->user()->id;
             $cliente->nome=$request->name;
             $cliente->sobrenome=$request->sobrenome;
+            $cliente->apelido=$request->apelido;
+            $cliente->nome_mae=$request->nome_mae;
             $cliente->email=$request->email;
             $cliente->profissao=$request->profissao;
             $cliente->genero=$request->genero;
             $cliente->estado_civil=$request->estado_civil;
             $cliente->telefone1=$request->telefone1;
             $cliente->telefone2=$request->telefone2;
+            $cliente->whatstelefone1=$request->whats1;
+            $cliente->whatstelefone2=$request->whats2;
+            $cliente->rg=$request->rg;
+            $cliente->orgao=$request->orgao;
+            $cliente->cpf=$request->cpf;
+            $cliente->nascimento = $request->nascimento;
+            $cliente->incapaz = false;
             $cliente->status=$request->status;
+            $cliente->nomeresp=$request->nomeresp;
+            $cliente->rgresp=$request->rgresp;
+            $cliente->orgaoresp=$request->orgaoresp;
+            $cliente->cpfresp=$request->cpfresp;
             $cliente->save();
             $cliente->chave_acesso = crypt($cliente->id,'SGPA');
             if($request->perfil){
@@ -204,32 +220,7 @@ class ClientesController extends Controller
                 
             }
             $cliente->save();
-            // Documentos
-            $documento->cliente_id = $cliente->id;
-            $documento->rg=$request->rg;
-            if($request->foto_rg){
-                try {
-                    $nameRg = "rg" . $documento->rg . '.' . request()->foto_rg->getClientOriginalExtension();
-                    $caminhoRg = 'assets/img/clientes/'. $cliente->id . '/';
-                    $documento->rg_path = $caminhoRg . $nameRg;
-                    request()->foto_rg->move(public_path($caminhoRg),$nameRg);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }
-                
-            }
-            $documento->orgao=$request->orgao;
-            $documento->cpf=$request->cpf;
-            if($request->foto_cpf){
-                try {
-                    $nameCpf = "cpf" . $documento->cpf . '.' . request()->foto_cpf->getClientOriginalExtension();
-                    $caminhoCpf = 'assets/img/clientes/'. $cliente->id . '/';
-                    $documento->cpf_path = $caminhoCpf . $nameCpf;
-                    request()->foto_cpf->move(public_path($caminhoCpf),$nameCpf);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }                
-            }
+            
             // Endereço
             $endereco->cliente_id = $cliente->id;
             $endereco->bairro=$request->bairro;
@@ -241,7 +232,6 @@ class ClientesController extends Controller
             $endereco->complemento=$request->complemento;
             $endereco->cep=$request->cep;                        
                  
-            $documento->save();
             $endereco->save();
 
             return back()->with('success','Cliente criado com sucesso');

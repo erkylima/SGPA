@@ -5,7 +5,7 @@
             <div class="card-header">
                 <h4>Usuários <span v-if="total">({{ total }})</span></h4>
                 <div class="card-header-action">
-                    <a v-if="$parent.userCan('create-users')" v-bind:href="$parent.MakeUrl('admin/users/create')" class="btn btn-primary">Add <i class="fas fa-plus"></i></a>
+                    <a v-if="$parent.userCan('create-users')" v-bind:href="$parent.MakeUrl('sistema/users/create')" class="btn btn-primary">Add <i class="fas fa-plus"></i></a>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -68,7 +68,7 @@ export default {
         if(query !== undefined) {
             this.query = query;
         }
-        this.url = BaseUrl('admin/users?q='+this.query);
+        this.url = BaseUrl('sistema/users?q='+this.query);
         this.loadUsers();
     },
     methods: {
@@ -90,7 +90,7 @@ export default {
                 title: 'Are you sure?',
                 text: 'The user and their associated data will be permanently deleted. Proceed?'
             }).then(function() {
-                axios.delete(_this.$parent.MakeUrl('admin/users/'+userId)).then((res) => {
+                axios.delete(_this.$parent.MakeUrl('sistema/users/'+userId)).then((res) => {
                     _this.users.splice(index, 1);
                     _this.total = _this.total - 1;
                     _this.loadUsers();

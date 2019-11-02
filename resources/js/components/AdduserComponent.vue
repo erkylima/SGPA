@@ -88,7 +88,7 @@ export default {
     },
     methods: {
         getRoles() {
-            axios.get(this.$parent.MakeUrl('admin/users/roles')).then((res) => {
+            axios.get(this.$parent.MakeUrl('sistema/users/roles')).then((res) => {
                 this.roles = res.data;
             }).catch((err) => {
 
@@ -99,7 +99,7 @@ export default {
             _this.errors = [];
             _this.message = '';
             _this.loading = true;
-            axios.post(this.$parent.MakeUrl('admin/users'), {'name': this.name, 'role': this.role, 'email': this.email, 'current_password': this.current_password, 'password': this.password, 'password_confirmation': this.password_confirmation}).then((res) => {
+            axios.post(this.$parent.MakeUrl('sistema/users'), {'name': this.name, 'role': this.role, 'email': this.email, 'current_password': this.current_password, 'password': this.password, 'password_confirmation': this.password_confirmation}).then((res) => {
                 _this.loading = false;
                 _this.resetForm();
                 _this.message = 'Usuário criado com sucesso!';

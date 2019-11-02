@@ -62,7 +62,7 @@
                         </div>
                     <div class="float-right">
                         <div class="input-group">
-                            <input id="search" type="text" class="form-control" placeholder="Pesquisar">
+                            <input data-toggle="tooltip" data-placement="top" title="Realize uma pesquisa por nome, sobrenome, profissão ou CPF" id="search" type="text" class="form-control" placeholder="Pesquisar">
                             <div class="input-group-append">
                             <button id="botaosearch" class="btn btn-primary"><i class="fas fa-search"></i></button>
                             </div>

@@ -34,6 +34,12 @@
                     {{ session()->get('falha') }}
                 </div>
             @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">                   
+                    {{ $errors->first('cpf') }}
+
+                </div>
+            @endif
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -41,15 +47,16 @@
                         <h4>Preencha o Formulário</h4>                    
                     </div>
                     <div class="card-body">
+                        
                         <form name="criar" action="{{ route('painel.clientes.store')}}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}     
-                            <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
+                            {{-- <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
                             <div class="form-group row mb-4 justify-content-center">
                                 <div class="custom-file  col-lg-4 col-md-12">
                                     <input type="file" class="custom-file-input" id="perfil" name="perfil">
                                     <label class="custom-file-label" for="perfil">Escolher arquivo</label>
                                 </div>
-                            </div>                    
+                            </div>                     --}}
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="name">Nome (*)</label>
@@ -68,9 +75,33 @@
                                         
                                 </div>                            
                             </div>
+                            <div class="form-row row mb-4 justify-content-center">                            
+                                <div class="form-group col-lg-3 col-md-12">
+                                    <label for="apelido">Apelido (opcional)</label>                                        
+                                    <input type="text" name="apelido" id="apelido" class="form-control" value="" tabindex="1" placeholder="Digite o apelido do cliente">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('apelido') }}</p>
+                                    </div>                                    
+                                </div>
+                                <div class="form-group col-lg-2 col-md-12">
+                                    <label for="nascimento">Data de Nascimento (*)</label>
+                                    <input tabindex="1" name="nascimento" id="nascimento" type="date" class="form-control">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('nascimento') }}</p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-3 col-md-12">
+                                    <label for="nome_mae">Nome da Mãe (*)</label>                                    
+                                    <input type="text" name="nome_mae" id="nome_mae" class="form-control" value="" tabindex="1" placeholder="Digite o nome da mãe do cliente">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('nome_mae') }}</p>
+                                    </div>
+                                        
+                                </div>                            
+                            </div>
                             <div class="form-row row mb-4 justify-content-center">
                                 <div class="form-group col-lg-4 col-md-12">
-                                    <label for="email">Email (*)</label>
+                                    <label for="email">Email (opcional)</label>
                                     <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="">
                                     <div class="invalid-feedback">
                                         {{ $errors->first('email') }}
@@ -89,35 +120,48 @@
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="genero" class="control-label">Genero (*)</label>
-                                    <select class="form-control" id="genero" tabindex="10" name="genero">
+                                    <select class="form-control" id="genero" tabindex="1" name="genero">
                                         <option value="M">Masculino</option>
                                         <option value="F">Feminino</option>
                                         <option value="O">Outro</option>
                                     </select>
                                 </div>
 
-                                <div class="form-group col-lg-4 col-md-12">
+                                <div class="form-group col-lg-2 col-md-12">
                                     <label for="estado_civil">Estado Civil (*)</label>
-                                        <select class="form-control" id="estado_civil" tabindex="2" name="estado_civil">
-                                                <option value="Solteiro">Solteiro</option>
-                                                <option value="Casado">Casado</option>
-                                                <option value="Separado">Separado</option>
-                                                <option value="Divorciado">Divorciado</option>
-                                                <option value="Viúvo">Viúvo</option>
-                                                <option value="Amasiado">Amasiado</option>
-                                        </select>                    
+                                    <select class="form-control" id="estado_civil" tabindex="1" name="estado_civil">
+                                            <option value="Solteiro">Solteiro</option>
+                                            <option value="Casado">Casado</option>
+                                            <option value="Separado">Separado</option>
+                                            <option value="Divorciado">Divorciado</option>
+                                            <option value="Viúvo">Viúvo</option>
+                                            <option value="Amasiado">Amasiado</option>
+                                    </select>                    
                                 </div>
-                            </div> 
+
+                                <div class="form-group col-lg-2 col-md-12 ">
+                                    <div class="control-label">O cliente se enquadra como incapaz de respoder por si mesmo?</div>
+                                    <label for="incapaz" class="custom-switch mt-2">
+                                      <input type="checkbox" onchange="checkIncapaz()" tabindex="1" name="incapaz" id="incapaz" class="custom-switch-input">
+                                      <span class="custom-switch-indicator"></span>
+                                      <span class="custom-switch-description">Marcar se sim</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-row row mb-4 justify-content-center" id="incapazone">
+
+                            </div>
 
                             <div class="form-row row mb-4 justify-content-center">
                                 <div class="form-group col-lg-3 col-md-12">
-                                    <label data-toggle="tooltip" data-placement="top" title="Clique em Foto RG para enviar o arquivo do RG." for="rg">RG (*)</label>
+                                    <label for="rg">RG (*)</label>
                                     <div class="input-group">
-                                        <div class="custom-file">
+                                        {{-- <div class="custom-file">
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_rg" name="foto_rg">
                                             <label class="custom-file-label" for="foto_rg">Foto RG</label>
-                                        </div>
-                                        <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
+                                        </div> --}}
+                                        <input id="rg" type="text" onkeyup="num(this);" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
                                     </div>                    
                                 </div>
                 
@@ -129,14 +173,17 @@
                                 </div>
                 
                                 <div class="form-group col-lg-3 col-md-12">
-                                    <label data-toggle="tooltip" data-placement="top" title="Clique em Foto CPF para enviar o arquivo do CPF." for="cpf">CPF (*)</label>
+                                    <label for="cpf">CPF (*)</label>
                                     <div class="input-group">
-                                        <div class="custom-file">
+                                        {{-- <div class="custom-file">
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_cpf" name="foto_cpf">
                                             <label class="custom-file-label" for="foto_cpf">Foto CPF</label>
-                                        </div>                                    
-                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
-                                    </div>                                        
+                                        </div> --}}
+                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control{{ $errors->has('cpf') ? ' is-invalid' : '' }} " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('cpf') }}
+                                    </div>
                                 </div>
                                 
                                 
@@ -159,7 +206,7 @@
                 
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="estado">Estado (*)</label>
-                                        <select class="form-control" id="estado" tabindex="2" name="estado">
+                                        <select class="form-control" id="estado" tabindex="1" name="estado">
                                             <option  value="AC">Acre</option>
                                             <option value="AL">Alagoas</option>
                                             <option value="AP">Amapá</option>
@@ -196,7 +243,7 @@
                                 <div class="form-group col-lg-5 col-md-12">
                                     <label for="rua">Rua (*)</label>
                                     <div class="input-group">
-                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="">
+                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="1" value="">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('rua') }}
@@ -205,7 +252,7 @@
                 
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="pais">Pais (*)</label>
-                                    <select class="form-control" id="pais" tabindex="2" name="pais">
+                                    <select class="form-control" id="pais" tabindex="1" name="pais">
                                         <option value="Brasil" selected>Brasil</option>    
                                         <option value="África do Sul">África do Sul</option>
                                         <option value="Albânia">Albânia</option>
@@ -425,6 +472,10 @@
                                             </div>
                                         </div>
                                         <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="" >
+                                        <div class="custom-control custom-checkbox ml-2">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats1" id="whats1">
+                                            <label class="custom-control-label" for="whats1">WhatsApp?</label>
+                                        </div>
                                         <div class="invalid-feedback">
                                             {{ $errors->first('fone') }}
                                         </div>
@@ -439,9 +490,10 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="" >
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('fone') }}
+                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="" >                                        
+                                        <div class="custom-control custom-checkbox ml-2">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats2" id="whats2">
+                                            <label class="custom-control-label" for="whats2">WhatsApp?</label>
                                         </div>
                                     </div>
                                 </div>
@@ -449,7 +501,7 @@
                             <div class="form-group row mb-4 justify-content-left">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status</label>
                                 <div class="col-sm-12 col-md-4">
-                                    <select name="status" class="form-control selectric">
+                                    <select tabindex="9" name="status" class="form-control selectric">
                                         <option value="1">Rascunho</option>
                                         <option value="0">Concluído</option>
                                         <option value="2">Pendente</option>
@@ -477,6 +529,15 @@
     <script>
         function emailIsValid (email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        function checkIncapaz(){
+            if($('#incapaz').is(':checked')){
+                $('#incapazone').addClass('jumbotron');
+                document.getElementById("incapazone").innerHTML = "<div class='form-group col-lg-3 col-md-12'><label for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>";
+            }else{
+                $('#incapazone').removeClass('jumbotron');
+                document.getElementById("incapazone").innerHTML="";
+            }
         }
         
         function criarUser(){      

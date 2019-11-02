@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $adminRole = Role::create(['name' => 'Admin']);
-        $adminPermissions = ['relatorio', 'manage-users', 'view-users', 'create-users', 'edit-users',  'delete-users', 'ver-processo', 'create-processo', 'update-processo'];
+        $adminPermissions = ['relatorio', 'manage-users', 'view-users', 'create-users', 'edit-users',  'delete-users', 'ver-processo', 'create-processo', 'update-processo','ver-clientes','create-cliente','update-cliente','delete-cliente'];
         foreach($adminPermissions as $ap)
         {
             $permission = Permission::create(['name' => $ap]);
@@ -23,13 +23,13 @@ class UsersTableSeeder extends Seeder
         }
         $adminUser = User::create([
             'name' => 'Administrador',
-            'email' => 'admin@admin.com',
+            'email' => 'erkylima@gmail.com',
             'password' => Hash::make('1234')
         ]);
         $adminUser->assignRole($adminRole);
 
         $editorRole = Role::create(['name' => 'Supervisor']);
-        $editorPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo', 'update-processo','ver-pendencias'];
+        $editorPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo', 'update-processo','ver-pendencias','ver-cliente','create-cliente','update-cliente'];
         foreach($editorPermissions as $ep)
         {
             $permission = Permission::firstOrCreate(['name' => $ep]);
@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
         $editorUser->assignRole($editorRole);
 
         $userRole = Role::create(['name' => 'Secritário']);
-        $userPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo','ver-pendencias'];
+        $userPermissions = ['manage-users', 'view-users', 'create-users', 'edit-users', 'ver-processo','ver-pendencias','ver-cliente','create-cliente','update-cliente'];
         foreach($userPermissions as $up)
         {
             $permission = Permission::firstOrCreate(['name' => $up]);

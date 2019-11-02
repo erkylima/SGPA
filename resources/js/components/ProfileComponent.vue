@@ -112,7 +112,7 @@ export default {
             return JSON.parse(this.user)[key];
         },
         getRoles() {
-            axios.get(this.$parent.MakeUrl('admin/users/roles')).then((res) => {
+            axios.get(this.$parent.MakeUrl('sistema/users/roles')).then((res) => {
                 this.roles = res.data;
             }).catch((err) => {
 
@@ -124,7 +124,7 @@ export default {
             _this.message = '';
             _this.loading = true;
             
-            axios.post(this.$parent.MakeUrl('admin/users/'+this.getUserdata('id')), {'name': this.name, 'email': this.email,'image_avatar': this.image_avatar, 'current_password': this.current_password, 'role': this.role, 'password': this.password, 'password_confirmation': this.password_confirmation,'_enctype':'multipart/form-data', '_method': 'PATCH'}).then((res) => {
+            axios.post(this.$parent.MakeUrl('sistema/users/'+this.getUserdata('id')), {'name': this.name, 'email': this.email,'image_avatar': this.image_avatar, 'current_password': this.current_password, 'role': this.role, 'password': this.password, 'password_confirmation': this.password_confirmation,'_enctype':'multipart/form-data', '_method': 'PATCH'}).then((res) => {
                 _this.loading = false;
                 _this.message = 'Dados atualizados com sucesso!';
             }).catch((err) => {

@@ -17,7 +17,11 @@ class CreateProcessosTable extends Migration
             $table->bigIncrements('id');
             $table->string('titulo');
             $table->string('descricao');
-            $table->tinyInteger('agenciador');
+            $table->tinyInteger('agenciador_id');
+            $table->foreign('agenciador_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->double('valor');
             $table->timestamps();
         });        
