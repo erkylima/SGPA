@@ -24,7 +24,7 @@ class ProcessosController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.processos.criar');
     }
 
     /**

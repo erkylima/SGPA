@@ -57,52 +57,55 @@
                                     <label class="custom-file-label" for="perfil">Escolher arquivo</label>
                                 </div>
                             </div>                     --}}
+
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="name">Nome (*)</label>
                                         
-                                    <input type="text" name="name" id="name" class="form-control" value="" tabindex="1" placeholder="Digite o nome do cliente">
+                                    <input type="text" name="name" id="name" class="form-control" value="{{old('name')}}" tabindex="1" placeholder="Digite o nome do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('name') }}</p>
                                     </div>                                    
                                 </div>
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="sobrenome">Sobrenome (*)</label>                                    
-                                    <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="" tabindex="1" placeholder="Digite o sobrenome do cliente">
+                                    <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="{{old('sobrenome')}}" tabindex="1" placeholder="Digite o sobrenome do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('sobrenome') }}</p>
                                     </div>
                                         
                                 </div>                            
                             </div>
+
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="apelido">Apelido (opcional)</label>                                        
-                                    <input type="text" name="apelido" id="apelido" class="form-control" value="" tabindex="1" placeholder="Digite o apelido do cliente">
+                                    <input type="text" name="apelido" id="apelido" class="form-control" value="{{old('apelido')}}" tabindex="1" placeholder="Digite o apelido do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('apelido') }}</p>
                                     </div>                                    
                                 </div>
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="nascimento">Data de Nascimento (*)</label>
-                                    <input tabindex="1" name="nascimento" id="nascimento" type="date" class="form-control">
+                                    <input tabindex="1" name="nascimento" id="nascimento" type="date" value="{{old('date')}}"class="form-control">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('nascimento') }}</p>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="nome_mae">Nome da Mãe (*)</label>                                    
-                                    <input type="text" name="nome_mae" id="nome_mae" class="form-control" value="" tabindex="1" placeholder="Digite o nome da mãe do cliente">
+                                    <input type="text" name="nome_mae" id="nome_mae" class="form-control" value="{{old('nome_mae')}}" tabindex="1" placeholder="Digite o nome da mãe do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('nome_mae') }}</p>
                                     </div>
                                         
                                 </div>                            
                             </div>
+
                             <div class="form-row row mb-4 justify-content-center">
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="email">Email (opcional)</label>
-                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="">
+                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="{{old('email')}}">
                                     <div class="invalid-feedback">
                                         {{ $errors->first('email') }}
                                     </div>
@@ -110,7 +113,7 @@
 
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="profissao">Profissão (*)</label>                                    
-                                    <input type="text" name="profissao" id="profissao" class="form-control" value="" tabindex="1" placeholder="Digite a profissão do cliente">
+                                    <input type="text" name="profissao" id="profissao" class="form-control" value="{{old('profissao')}}" tabindex="1" placeholder="Digite a profissão do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('sobrenome') }}</p>
                                     </div>                                    
@@ -161,14 +164,14 @@
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_rg" name="foto_rg">
                                             <label class="custom-file-label" for="foto_rg">Foto RG</label>
                                         </div> --}}
-                                        <input id="rg" type="text" onkeyup="num(this);" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="">
+                                        <input id="rg" type="text" onkeyup="num(this);" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="{{old('rg')}}">
                                     </div>                    
                                 </div>
                 
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="orgao">Orgão (*)</label>
                                     <div class="input-group">
-                                        <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="">
+                                        <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="{{old('orgao')}}">
                                     </div>                    
                                 </div>
                 
@@ -179,7 +182,7 @@
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_cpf" name="foto_cpf">
                                             <label class="custom-file-label" for="foto_cpf">Foto CPF</label>
                                         </div> --}}
-                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control{{ $errors->has('cpf') ? ' is-invalid' : '' }} " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="">
+                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control{{ $errors->has('cpf') ? ' is-invalid' : '' }} " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="{{old('cpf')}}">
                                     </div>
                                     <div class="invalid-feedback">
                                         {{ $errors->first('cpf') }}
@@ -193,14 +196,14 @@
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="bairro">Bairro (*)</label>
                                     <div class="input-group">
-                                        <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="">
+                                        <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="{{old('bairro')}}">
                                     </div>                    
                                 </div>
                 
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="cidade">Cidade (*)</label>
                                     <div class="input-group">
-                                    <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="">
+                                    <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="{{old('cidade')}}">
                                     </div>                    
                                 </div>
                 
@@ -243,7 +246,7 @@
                                 <div class="form-group col-lg-5 col-md-12">
                                     <label for="rua">Rua (*)</label>
                                     <div class="input-group">
-                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="1" value="">
+                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="1" value="{{old('rua')}}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('rua') }}
@@ -433,7 +436,7 @@
                                 <div class="form-group col-lg-1 col-md-12">
                                     <label for="numero">Número (*)</label>
                                     <div class="input-group">
-                                        <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="">
+                                        <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="{{old('numero')}}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('numero') }}
@@ -445,7 +448,7 @@
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="complemento">Complemento (*)</label>
                                     <div class="input-group">                    
-                                        <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="" >
+                                        <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="{{old('complemento')}}" >
                                         <div class="invalid-feedback">
                                             {{ $errors->first('complemento') }}
                                         </div>
@@ -454,7 +457,7 @@
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="cep">CEP (*)</label>
                                     <div class="input-group">
-                                        <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="">
+                                        <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="{{old('cep')}}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('cep') }}
@@ -471,9 +474,9 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="" >
+                                        <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="{{old('telefone1')}}" >
                                         <div class="custom-control custom-checkbox ml-2">
-                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats1" id="whats1">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" {{ old('whats1') == 'on' ? 'checked' : '' }} name="whats1" id="whats1">
                                             <label class="custom-control-label" for="whats1">WhatsApp?</label>
                                         </div>
                                         <div class="invalid-feedback">
@@ -490,14 +493,15 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="" >                                        
+                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="{{old('telefone2')}}" >                                        
                                         <div class="custom-control custom-checkbox ml-2">
-                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats2" id="whats2">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats2" {{ old('whats2') == 'on' ? 'checked' : '' }} id="whats2">
                                             <label class="custom-control-label" for="whats2">WhatsApp?</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group row mb-4 justify-content-left">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status</label>
                                 <div class="col-sm-12 col-md-4">

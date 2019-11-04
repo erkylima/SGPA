@@ -14,6 +14,15 @@ Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
             'create' => 'clientes.novo'
         ]
     ]);
+
+    Route::resource('processos', 'ProcessosController', [
+        'names' => [
+            'index' => 'processos',
+            'show' => 'processos.ver',
+            'create' => 'processos.novo'
+        ]
+    ]);
+
     Route::get('cliente_nome', 'ClientesController@cliente_nome')->name('cliente_nome');
 });
 Route::name('admin.')->prefix('sistema')->middleware('auth')->group(function() {

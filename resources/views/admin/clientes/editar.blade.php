@@ -44,13 +44,14 @@
                         <form name="editar" action="{{ route('painel.clientes.update',$cliente->id)}}" method="post" enctype="multipart/form-data">
                             @method('PUT')
                             {{ csrf_field() }}     
-                            <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
+                            {{-- <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
                             <div class="form-group row mb-4 justify-content-center">
                                 <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file  col-lg-4 col-md-12">
                                     <input type="file" class="custom-file-input" id="perfil" name="perfil">
                                     <label class="custom-file-label" for="perfil">Escolher arquivo</label>
                                 </div>
-                            </div>                    
+                            </div>     --}}
+
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="name">Nome (*)</label>
@@ -69,10 +70,36 @@
                                         
                                 </div>                            
                             </div>
+
+                            <div class="form-row row mb-4 justify-content-center">                            
+                                <div class="form-group col-lg-3 col-md-12">
+                                    <label for="apelido">Apelido (opcional)</label>                                        
+                                    <input type="text" name="apelido" id="apelido" class="form-control" value="{{old('apelido',$cliente->apelido)}}" tabindex="1" placeholder="Digite o apelido do cliente">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('apelido') }}</p>
+                                    </div>                                    
+                                </div>
+                                <div class="form-group col-lg-2 col-md-12">
+                                    <label for="nascimento">Data de Nascimento (*)</label>
+                                    <input tabindex="1" name="nascimento" id="nascimento" type="date" value="{{old('date',$cliente->nascimento)}}"class="form-control">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('nascimento') }}</p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-3 col-md-12">
+                                    <label for="nome_mae">Nome da Mãe (*)</label>                                    
+                                    <input type="text" name="nome_mae" id="nome_mae" class="form-control" value="{{old('nome_mae',$cliente->nome_mae)}}" tabindex="1" placeholder="Digite o nome da mãe do cliente">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('nome_mae') }}</p>
+                                    </div>
+                                        
+                                </div>                            
+                            </div>
+
                             <div class="form-row row mb-4 justify-content-center">
                                 <div class="form-group col-lg-4 col-md-12">
-                                    <label for="email">Email (*)</label>
-                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="{{$cliente->email}}">
+                                    <label for="email">Email (opcional)</label>
+                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Endereço de email" name="email" tabindex="1" value="{{old('email',$cliente->email)}}">
                                     <div class="invalid-feedback">
                                         {{ $errors->first('email') }}
                                     </div>
@@ -80,13 +107,13 @@
 
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="profissao">Profissão (*)</label>                                    
-                                    <input type="text" name="profissao" id="profissao" class="form-control" value="{{$cliente->profissao}}" tabindex="1" placeholder="Digite a profissão do cliente">
+                                    <input type="text" name="profissao" id="profissao" class="form-control" value="{{old('profissao',$cliente->profissao)}}" tabindex="1" placeholder="Digite a profissão do cliente">
                                     <div class="invalid-feedback">
                                         <p>{{ $errors->first('sobrenome') }}</p>
                                     </div>                                    
                                 </div>
                             </div>
-
+                            
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="genero" class="control-label">Genero (*)</label>
@@ -97,7 +124,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-lg-4 col-md-12">
+                                <div class="form-group col-lg-2 col-md-12">
                                     <label for="estado_civil">Estado Civil (*)</label>
                                         <select class="form-control" id="estado_civil" tabindex="2" name="estado_civil">
                                                 <option {{ $cliente->genero == 'Solteiro' ? ' selected' : '' }} value="Solteiro">Solteiro</option>
@@ -108,36 +135,51 @@
                                                 <option {{ $cliente->genero == 'Amasiado' ? ' selected' : '' }} value="Amasiado">Amasiado</option>
                                         </select>                    
                                 </div>
+                                <div class="form-group col-lg-2 col-md-12 ">
+                                    <div class="control-label">O cliente se enquadra como incapaz de respoder por si mesmo?</div>
+                                    <label for="incapaz" class="custom-switch mt-2">
+                                      <input type="checkbox" onchange="checkIncapaz()" {{ $cliente->incapaz == 1 ? ' checked' : '' }} tabindex="1" name="incapaz" id="incapaz" class="custom-switch-input">
+                                      <span class="custom-switch-indicator"></span>
+                                      <span class="custom-switch-description">Marcar se sim</span>
+                                    </label>
+                                </div>
                             </div> 
+
+                            <div class="form-row row mb-4 justify-content-center" id="incapazone">
+
+                            </div>
 
                             <div class="form-row row mb-4 justify-content-center">
                                 <div class="form-group col-lg-3 col-md-12">
-                                    <label data-toggle="tooltip" data-placement="top" title="Clique em Foto RG para enviar o arquivo do RG." for="rg">RG (*)</label>
+                                    <label for="rg">RG (*)</label>
                                     <div class="input-group">
-                                        <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file">
+                                        {{-- <div class="custom-file">
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_rg" name="foto_rg">
                                             <label class="custom-file-label" for="foto_rg">Foto RG</label>
-                                        </div>
-                                        <input id="rg" type="text" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="{{$documento->rg}}">
+                                        </div> --}}
+                                        <input id="rg" type="text" onkeyup="num(this);" class="form-control" pattern="[0-9]+" placeholder="Digite seu RG" name="rg" tabindex="1" value="{{old('rg', $cliente->rg)}}">
                                     </div>                    
                                 </div>
                 
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="orgao">Orgão (*)</label>
                                     <div class="input-group">
-                                        <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="{{$documento->orgao}}">
+                                        <input id="orgao" type="text" class="form-control" placeholder="Expedidor" maxlength="20" name="orgao" tabindex="1" value="{{old('orgao',$cliente->orgao)}}">
                                     </div>                    
                                 </div>
                 
                                 <div class="form-group col-lg-3 col-md-12">
-                                    <label data-toggle="tooltip" data-placement="top" title="Clique em Foto CPF para enviar o arquivo do CPF." for="cpf">CPF (*)</label>
+                                    <label for="cpf">CPF (*)</label>
                                     <div class="input-group">
-                                        <div data-toggle="tooltip" data-placement="top" title="Somente se quiser alterar a foto." class="custom-file">
+                                        {{-- <div class="custom-file">
                                             <input type="file" placeholder="Foto" class="custom-file-input" id="foto_cpf" name="foto_cpf">
                                             <label class="custom-file-label" for="foto_cpf">Foto CPF</label>
-                                        </div>                                    
-                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="{{$documento->cpf}}">
-                                    </div>                                        
+                                        </div> --}}
+                                        <input id="cpf" onkeyup="num(this);" type="text" class="form-control{{ $errors->has('cpf') ? ' is-invalid' : '' }} " pattern="[0-9]*" maxlength="11" placeholder="Digite seu CPF" name="cpf" tabindex="1" value="{{old('cpf',$cliente->cpf)}}">
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('cpf') }}
+                                    </div>
                                 </div>
                                 
                                 
@@ -147,14 +189,14 @@
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="bairro">Bairro (*)</label>
                                     <div class="input-group">
-                                        <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="{{$endereco->bairro}}">
+                                        <input id="bairro" type="text" class="form-control" maxlength="50" placeholder="Digite seu Bairro" name="bairro" tabindex="1" value="{{old('bairro',$endereco->bairro)}}">
                                     </div>                    
                                 </div>
                 
                                 <div class="form-group col-lg-3 col-md-12">
                                     <label for="cidade">Cidade (*)</label>
                                     <div class="input-group">
-                                    <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="{{$endereco->cidade}}">
+                                    <input id="cidade" type="text" class="form-control" maxlength="50" placeholder="Digite sua Cidade" name="cidade" tabindex="1" value="{{ old('cidade',$endereco->cidade)}}">
                                     </div>                    
                                 </div>
                 
@@ -197,7 +239,7 @@
                                 <div class="form-group col-lg-5 col-md-12">
                                     <label for="rua">Rua (*)</label>
                                     <div class="input-group">
-                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="{{$endereco->rua}}">
+                                        <input id="rua" type="text" class="form-control{{ $errors->has('rua') ? ' is-invalid' : '' }}" placeholder="Digite sua Rua" name="rua" tabindex="3" value="{{ old('rua',$endereco->rua) }}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('rua') }}
@@ -387,7 +429,7 @@
                                 <div class="form-group col-lg-1 col-md-12">
                                     <label for="numero">Número (*)</label>
                                     <div class="input-group">
-                                        <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="{{$endereco->numero}}">
+                                        <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" pattern="[0-9]+" placeholder="Núm." maxlength="11" name="numero" tabindex="1" value="{{old('numero',$endereco->numero)}}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('numero') }}
@@ -399,7 +441,7 @@
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="complemento">Complemento (*)</label>
                                     <div class="input-group">                    
-                                        <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="{{$endereco->complemento}}" >
+                                        <input id="complemento" type="text" class="form-control" placeholder="Digite o complemento" name="complemento" tabindex="1" value="{{old('complemento',$endereco->complemento)}}" >
                                         <div class="invalid-feedback">
                                             {{ $errors->first('complemento') }}
                                         </div>
@@ -408,7 +450,7 @@
                                 <div class="form-group col-lg-4 col-md-12">
                                     <label for="cep">CEP (*)</label>
                                     <div class="input-group">
-                                        <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="{{$endereco->cep}}">
+                                        <input id="cep" type="text" class="form-control{{ $errors->has('cep') ? ' is-invalid' : '' }}" pattern="[a-zA-Z0-9]+" placeholder="Digite o CEP" maxlength="8" placeholder="Digite seu CEP" name="cep" tabindex="1" value="{{ old('cep',$endereco->cep)}}">
                                     </div>
                                     <div class="invalid-feedback">
                                     {{ $errors->first('cep') }}
@@ -425,7 +467,11 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="{{$cliente->telefone1}}" >
+                                        <input id="telefone1" type="text" class="telefone form-control" placeholder="Digite seu telefone" name="telefone1" tabindex="9" value="{{old('telefone1',$cliente->telefone1)}}" >
+                                        <div class="custom-control custom-checkbox ml-2">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" {{ $cliente->whatstelefone1 == 1 ? 'checked' : '' }} {{ old('whats1') == 'on' ? 'checked' : '' }} name="whats1" id="whats1">
+                                            <label class="custom-control-label" for="whats1">WhatsApp?</label>
+                                        </div>
                                         <div class="invalid-feedback">
                                             {{ $errors->first('fone') }}
                                         </div>
@@ -440,13 +486,15 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="{{$cliente->telefone2}}" >
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('fone') }}
+                                        <input name="telefone2" id="telefone2" type="text" class="telefone form-control" placeholder="Digite seu telefone" tabindex="9" value="{{old('telefone2',$cliente->telefone2)}}" >                                        
+                                        <div class="custom-control custom-checkbox ml-2">
+                                            <input type="checkbox" tabindex="9" class="custom-control-input" name="whats2" id="whats2" {{ $cliente->whatstelefone2 == 1 ? 'checked' : '' }} {{ old('whats2') == 'on' ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="whats2">WhatsApp?</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="form-group row mb-4 justify-content-left">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status</label>
                                 <div class="col-sm-12 col-md-4">
@@ -479,7 +527,19 @@
         function emailIsValid (email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
-        
+
+        function checkIncapaz(){
+            if($('#incapaz').is(':checked')){
+                $('#incapazone').addClass('jumbotron');
+                document.getElementById("incapazone").innerHTML = "<div class='form-group col-lg-3 col-md-12'><label for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='{{ old('nomeresp',$cliente->nomeresp)}}' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='{{ old('cpfresp',$cliente->cpfresp)}}' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='{{ old('rgresp',$cliente->rgresp)}}' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='{{ old('orgaoresp',$cliente->orgaoresp)}}' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>";
+            }else{
+                $('#incapazone').removeClass('jumbotron');
+                document.getElementById("incapazone").innerHTML="";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            checkIncapaz();
+        });
         function editarUser(){      
             if(document.getElementById("name").value.length < 1 ){
                 iziToast.error({

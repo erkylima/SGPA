@@ -167,22 +167,31 @@ class ClientesController extends Controller
         $cliente = new Clientes();
         $endereco = new Enderecos();
         if(auth()->user()->can('create-cliente'))
-        {
+        {            
             $request->validate([
                 // 'name' => 'required|min:3|max:255',                
                 'cpf' => 'unique:clientes',
                 // 'perfil'=>'image|mimes:jpg|max:2048',            
-            ]);            
+            ]);
+
             if($request->whats1 == 'on'){
                 $request->whats1 = 1;
             }else{
                 $request->whats1 = 0;
             }
+
             if($request->whats2 == 'on'){
                 $request->whats2 = 1;
             }else{
                 $request->whats2 = 0;
             }
+
+            if($request->incapaz == 'on'){
+                $request->incapaz = 1;
+            }else{
+                $request->incapaz = 0;
+            }
+
             $cliente->chave_acesso = 0;
             $cliente->nome=$request->name;
             $cliente->sobrenome=$request->sobrenome;
@@ -200,7 +209,7 @@ class ClientesController extends Controller
             $cliente->orgao=$request->orgao;
             $cliente->cpf=$request->cpf;
             $cliente->nascimento = $request->nascimento;
-            $cliente->incapaz = false;
+            $cliente->incapaz = $request->incapaz;
             $cliente->status=$request->status;
             $cliente->nomeresp=$request->nomeresp;
             $cliente->rgresp=$request->rgresp;
@@ -217,21 +226,19 @@ class ClientesController extends Controller
                 } catch (\Throwable $th) {
                     // return back()->with('falha','A falha foi' . $th->getMessage());
                 }
-                
             }
             $cliente->save();
-            
             // Endereço
             $endereco->cliente_id = $cliente->id;
             $endereco->bairro=$request->bairro;
             $endereco->cidade=$request->cidade;
-            $endereco->estado=$request->estado;                                                
+            $endereco->estado=$request->estado;
             $endereco->rua=$request->rua;
             $endereco->pais=$request->pais;
             $endereco->numero=$request->numero;
             $endereco->complemento=$request->complemento;
-            $endereco->cep=$request->cep;                        
-                 
+            $endereco->cep=$request->cep;
+
             $endereco->save();
 
             return back()->with('success','Cliente criado com sucesso');
@@ -248,9 +255,8 @@ class ClientesController extends Controller
      */
     public function show(Clientes $cliente)
     {
-        $documento = Documentos::where('cliente_id',$cliente->id)->first();
         $endereco = Enderecos::where('cliente_id',$cliente->id)->first();
-        return view('admin.clientes.ver')->with(['cliente'=>$cliente,'documento'=>$documento,'endereco'=>$endereco]);    }
+        return view('admin.clientes.ver')->with(['cliente'=>$cliente,'endereco'=>$endereco]);    }
 
     /**
      * Show the form for editing the specified resource.
@@ -260,9 +266,8 @@ class ClientesController extends Controller
      */
     public function edit(Clientes $cliente)
     {
-        $documento = Documentos::where('cliente_id',$cliente->id)->first();
         $endereco = Enderecos::where('cliente_id',$cliente->id)->first();
-        return view('admin.clientes.editar')->with(['cliente'=>$cliente,'documento'=>$documento,'endereco'=>$endereco]);
+        return view('admin.clientes.editar')->with(['cliente'=>$cliente,'endereco'=>$endereco]);
     }
 
     /**
@@ -275,7 +280,6 @@ class ClientesController extends Controller
     public function update(Request $request, $id)
     {
         $cliente = Clientes::find($id);
-        $documento = Documentos::where('cliente_id',$id)->first();
         $endereco = Enderecos::where('cliente_id',$id)->first();
         if(auth()->user()->can('update-cliente'))
         {
@@ -284,57 +288,57 @@ class ClientesController extends Controller
                 'email' => 'required|email|unique:clientes,email,'.$id,
             //     // 'perfil'=>'image|mimes:jpg|max:2048',            
             ]);            
-            $cliente->chave_acesso = 0;
-            $cliente->agenciador_id=auth()->user()->id;
+            if($request->whats1 == 'on'){
+                $request->whats1 = 1;
+            }else{
+                $request->whats1 = 0;
+            }
+            if($request->whats2 == 'on'){
+                $request->whats2 = 1;
+            }else{
+                $request->whats2 = 0;
+            }
+            if($request->incapaz == 'on'){
+                $request->incapaz = 1;
+            }else{
+                $request->incapaz = 0;
+            }
             $cliente->nome=$request->name;
             $cliente->sobrenome=$request->sobrenome;
+            $cliente->apelido=$request->apelido;
+            $cliente->nome_mae=$request->nome_mae;
             $cliente->email=$request->email;
             $cliente->profissao=$request->profissao;
             $cliente->genero=$request->genero;
             $cliente->estado_civil=$request->estado_civil;
             $cliente->telefone1=$request->telefone1;
             $cliente->telefone2=$request->telefone2;
+            $cliente->whatstelefone1=$request->whats1;
+            $cliente->whatstelefone2=$request->whats2;
+            $cliente->rg=$request->rg;
+            $cliente->orgao=$request->orgao;
+            $cliente->cpf=$request->cpf;
+            $cliente->nascimento = $request->nascimento;
+            $cliente->incapaz = $request->incapaz;
             $cliente->status=$request->status;
+            $cliente->nomeresp=$request->nomeresp;
+            $cliente->rgresp=$request->rgresp;
+            $cliente->orgaoresp=$request->orgaoresp;
+            $cliente->cpfresp=$request->cpfresp;
             $cliente->save();
-            $cliente->chave_acesso = crypt($cliente->id,'SGPA');
-            if($request->perfil){
-                try {
-                    $namePerfil = "perfil." . request()->perfil->getClientOriginalExtension();
-                    $caminhoPerfil = 'assets/img/clientes/'. $cliente->id . '/';
-                    $cliente->foto_path = $caminhoPerfil . $namePerfil;
-                    request()->perfil->move(public_path($caminhoPerfil),$namePerfil);
-                } catch (\Throwable $th) {
-                    // return back()->with('falha','A falha foi' . $th->getMessage());
-                }
+            // if($request->perfil){
+            //     try {
+            //         $namePerfil = "perfil." . request()->perfil->getClientOriginalExtension();
+            //         $caminhoPerfil = 'assets/img/clientes/'. $cliente->id . '/';
+            //         $cliente->foto_path = $caminhoPerfil . $namePerfil;
+            //         request()->perfil->move(public_path($caminhoPerfil),$namePerfil);
+            //     } catch (\Throwable $th) {
+            //         // return back()->with('falha','A falha foi' . $th->getMessage());
+            //     }
                 
-            }
+            // }
             $cliente->save();
-            // Documentos
-            $documento->cliente_id = $cliente->id;
-            $documento->rg=$request->rg;
-            if($request->foto_rg){
-                try {
-                    $nameRg = "rg" . $documento->rg . '.' . request()->foto_rg->getClientOriginalExtension();
-                    $caminhoRg = 'assets/img/clientes/'. $cliente->id . '/';
-                    $documento->rg_path = $caminhoRg . $nameRg;
-                    request()->foto_rg->move(public_path($caminhoRg),$nameRg);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }
-                
-            }
-            $documento->orgao=$request->orgao;
-            $documento->cpf=$request->cpf;
-            if($request->foto_cpf){
-                try {
-                    $nameCpf = "cpf" . $documento->cpf . '.' . request()->foto_cpf->getClientOriginalExtension();
-                    $caminhoCpf = 'assets/img/clientes/'. $cliente->id . '/';
-                    $documento->cpf_path = $caminhoCpf . $nameCpf;
-                    request()->foto_cpf->move(public_path($caminhoCpf),$nameCpf);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }                
-            }
+            
             // Endereço
             $endereco->cliente_id = $cliente->id;
             $endereco->bairro=$request->bairro;
@@ -346,7 +350,6 @@ class ClientesController extends Controller
             $endereco->complemento=$request->complemento;
             $endereco->cep=$request->cep;                        
                  
-            $documento->save();
             $endereco->save();
 
             return back()->with('success','Cliente atualizado com sucesso');

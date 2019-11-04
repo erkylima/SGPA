@@ -51,11 +51,11 @@
                     <div class="profile-widget-items">
                         <div class="profile-widget-item">
                             <div class="profile-widget-item-label">CPF</div>
-                            <div class="profile-widget-item-value">{{ $documento->cpf }}</div>
+                            <div class="profile-widget-item-value">{{ $cliente->cpf }}</div>
                         </div>
                         <div class="profile-widget-item">
                             <div class="profile-widget-item-label">Identidade</div>
-                            <div class="profile-widget-item-value">{{ $documento->rg }}</div>
+                            <div class="profile-widget-item-value">{{ $cliente->rg }}</div>
                         </div>
                     </div>
                     <div class="font-weight-bold mb-2">Endereço</div>                
