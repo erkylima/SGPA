@@ -10,18 +10,18 @@
             <div class="section-header-back">
             <a href="{{auth()->user()->can('ver-clientes') ? route('painel.clientes') : route('admin.index')}}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
             </div>
-            <h1>Criar Novo Cliente</h1>
+            <h1>Criar Novo Processo</h1>
             <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="{{ route('admin.index') }}">Dashboard</a></div>
             @if(auth()->user()->can('ver-clientes')) 
             <div class="breadcrumb-item"><a href="{{route('painel.clientes')}}">Clientes</a></div>
             @endif
-            <div class="breadcrumb-item">Criar Novo Cliente</div>
+            <div class="breadcrumb-item">Criar Novo Processo</div>
             </div>
         </div>
 
         <div class="section-body">
-            <h2 class="section-title">Novo Cliente</h2>
+            <h2 class="section-title">Novo Processo</h2>
             <p class="section-lead">
             Nessa página você pode criar um novo cliente e preencher seus campos.
             </p>
@@ -59,24 +59,69 @@
                             </div>                     --}}
 
                             <div class="form-row row mb-4 justify-content-center">                            
-                                <div class="form-group col-lg-4 col-md-12">
-                                    <label for="name">Nome (*)</label>
+                                <div class="form-group col-lg-8 col-md-12">
+                                    <label for="titulo">Titulo (*)</label>
                                         
-                                    <input type="text" name="name" id="name" class="form-control" value="{{old('name')}}" tabindex="1" placeholder="Digite o nome do cliente">
+                                    <input tabindex="1" type="text" name="titulo" id="titulo" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{old('titulo')}}" tabindex="1" placeholder="Digite o nome do projeto">
                                     <div class="invalid-feedback">
-                                        <p>{{ $errors->first('name') }}</p>
+                                        <p>{{ $errors->first('titulo') }}</p>
                                     </div>                                    
-                                </div>
-                                <div class="form-group col-lg-4 col-md-12">
-                                    <label for="sobrenome">Sobrenome (*)</label>                                    
-                                    <input type="text" name="sobrenome" id="sobrenome" class="form-control" value="{{old('sobrenome')}}" tabindex="1" placeholder="Digite o sobrenome do cliente">
-                                    <div class="invalid-feedback">
-                                        <p>{{ $errors->first('sobrenome') }}</p>
-                                    </div>
-                                        
-                                </div>                            
+                                </div>                                                            
                             </div>
                             
+                            <div class="form-row row mb-4 justify-content-center">                            
+                                <div class="form-group col-lg-8 col-md-12">
+                                    <label for="descricao">Descrição (*)</label>
+                                        
+                                    <input tabindex="1" type="textarea" name="descricao" id="descricao" class="form-control" value="{{old('descricao')}}" tabindex="1" placeholder="Digite a descrição do projeto">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('descricao') }}</p>
+                                    </div>                                    
+                                </div>                                                            
+                            </div>
+
+                            <div class="form-row justify-content-center mb-4">
+                                <div class="form-group col-lg-3 col-md-12">
+                                    <label for="agenciador">Agenciador</label>
+                                    <select tabindex="1" id="agenciador" class="form-control" name="agenciador">
+                                        <option disabled selected>Selecione o agenciador</option>
+                                        @foreach ($usuarios as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            
+                                        @endforeach
+                                        {{var_dump($usuarios)}}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-2 col-md-12">
+                                    <label for="tipo_processo">Tipo do processo</label>
+                                    <select tabindex="1" id="tipo_processo" onchange="subtipo(this.options[this.selectedIndex].value)" class="form-control" name="tipo_processo">
+                                        <option disabled selected value="0">Selecione o tipo</option>
+                                        <option value="1">Auxílio-Doença</option>
+                                        <option value="2">Auxílio Reclusão</option>
+                                        <option value="3">Aposentadoria</option>
+                                        <option value="4">Cívil</option>
+                                        <option value="5">Criminal</option>
+                                        <option value="6">Pensão por Morte</option>
+                                        <option value="7">Salário Maternidade</option>
+                                        <option value="8">Trabalhista</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-2 col-md-12">
+                                    <label for="subtipo_processo">Subtipo do processo</label>
+                                    <select tabindex="1" id="subtipo_processo" class="form-control" name="subtipo_processo">
+                                        <option disabled selected>Selecione o subtipo</option>
+
+                                    </select>
+                                </div>                                
+                            </div>
+                            <div class="form-row justify-content-center" id="auxilio_doenca"></div>
+                            <div class="form-row justify-content-center" id="auxilio_reclusao"></div>                            
+                            <div class="form-row justify-content-center" id="aposentadoria"></div>                            
+                            <div class="form-row justify-content-center" id="civil"></div>                            
+                            <div class="form-row justify-content-center" id="criminal"></div>                            
+                            <div class="form-row justify-content-center" id="pensao_morte"></div>                        
+                            <div class="form-row justify-content-center" id="selario_maternidade"></div>
+                            <div class="form-row justify-content-center" id="selario_maternidade"></div>
                         </form>
                         <div class="row offset-8">
                             <button class="btn btn-lg btn-info" onclick="criarProcesso()" type="button" tabindex="16"><i class="fas fa-plus"></i> Criar Cliente</button>
@@ -84,6 +129,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </section>
 @endsection
@@ -100,13 +146,81 @@
         function checkIncapaz(){
             if($('#incapaz').is(':checked')){
                 $('#incapazone').addClass('jumbotron');
-                document.getElementById("incapazone").innerHTML = "<div class='form-group col-lg-3 col-md-12'><label for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>";
+                document.getElementById("incapazone").innerHTML = `<div class='form-group col-lg-3 col-md-12'><label for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>`;
             }else{
                 $('#incapazone').removeClass('jumbotron');
                 document.getElementById("incapazone").innerHTML="";
             }
         }
         
+        function subtipo(valor){
+            switch (valor) {
+                case '1':
+                    document.getElementById('auxilio_doenca').innerHTML = `
+                    <div class='form-group col-md-12 col-lg-2'>
+                        <label for='bpc_loas'>Laudo</label>
+                        <input tabindex="1" id='bpc_loas' class='form-control-file' type='file' name='bpc_loas'>
+                    </div>                    
+                    
+                    <div class="form-group col-md-12 col-lg-3">
+                        <label for="cid">Defina a categoria CID</label>
+                        <div class="input-group">
+                            <input tabindex="1" class="form-control" type="search" name="cidesc" placeholder="Cod ou Descrição" aria-label="Descrição do CID" aria-describedby="my-addon">                                    
+                            <select tabindex="1" id="cid" class="form-control" name="cid">
+                                @foreach ($cid as $item)
+                                    <option value="{{ $item->cod }}">{{ $item->cod }} - {{ $item->descricao }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12 col-lg-3">
+                        <label for="cid">Defina a subcategoria CID</label>
+                        <div class="input-group">
+                            <input tabindex="1" class="form-control" type="search" name="cidesc" placeholder="Cod ou Descrição" aria-label="Descrição do CID" aria-describedby="my-addon">                                    
+                            <select tabindex="1" id="cid" class="form-control" name="cid">
+                                @foreach ($cidsub as $item)
+                                    <option value="{{ $item->cod }}">{{ $item->cod }} - {{ $item->descricao }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    `;
+                    document.getElementById('auxilio_doenca').HTML
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='0'>Selecione o tipo</option><option value='1'>Concessão</option><option value='2'>Restabelecimento</option>";
+                    break;
+                case '2':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    break;
+                case '3':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='0'>Selecione o tipo</option><option value='1'>Por Invalidez</option><option value='2'>Por Idade</option><option value='3'>Por Tempo de Contribuição</option><option value='4'>Híbrida</option>";
+                    break;
+                case '4':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    console.log(valor);
+                    break;
+                case '5':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    console.log(valor);
+                    break;
+                case '6':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    console.log(valor);
+                    break;
+                case '7':
+                    document.getElementById('auxilio_doenca').innerHTML = "<div class='form-group col-md-12 col-lg-2'><label for='nome_crianca'>Nome da Criança</label><input id='nome_crianca' class='form-control' type='text' name='nome_crianca'></div><div class='form-group col-md-12 col-lg-2'><label for='data_parto'>Nome da Criança</label><input id='data_parto' class='form-control datetimepicker' type='text' name='data_parto'></div>";
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    console.log(valor);
+                    break;
+                case '8':
+                    document.getElementById('subtipo_processo').innerHTML = "<option disabled selected value='1'>Padrão</option>";
+                    console.log(valor);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         function criarProcesso(){      
             if(document.getElementById("name").value.length < 1 ){
                 iziToast.error({
@@ -224,6 +338,7 @@
 @endsection
 
 @section('css')
+    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/sweetalert/sweetalert.min.js') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/izitoast/css/iziToast.min.css') }}">
 @endsection

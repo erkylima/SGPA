@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Models\Processos;
+use App\Models\CidCategoria;
 use Illuminate\Http\Request;
+use App\Models\CidSubcategoria;
+use Illuminate\Support\Facades\DB;
 
 class ProcessosController extends Controller
 {
@@ -24,7 +28,15 @@ class ProcessosController extends Controller
      */
     public function create()
     {
-        return view('admin.processos.criar');
+        $usuarios =  DB::table('users')
+        ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+        // ->where('users.id','=','model_has_roles.model_id')
+        ->where('model_has_roles.role_id','=',1)
+        ->get();;
+        $cid_categoria = CidCategoria::all();
+        $cid_subcategoria = CidSubcategoria::all();
+
+        return view('admin.processos.criar')->with(['usuarios'=>$usuarios,'cid'=>$cid_categoria,'cidsub'=>$cid_subcategoria]);
     }
 
     /**

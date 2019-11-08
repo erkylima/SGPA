@@ -3,7 +3,7 @@
     <a href="{{ route('admin.index') }}">{{ env('APP_NAME') }}</a>
   </div>
   <div class="sidebar-brand sidebar-brand-sm">
-    <a href="index.html">PP</a>
+    <a href="index.html">PS</a>
   </div>
   <ul class="sidebar-menu">
     <li class="menu-header">Dashboard</li>
