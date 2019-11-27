@@ -125,38 +125,29 @@
                             <th class="text-center pt-2">
                                 #
                             </th>
-                            <th>Titulo</th>
-                            <th>Tipo</th>
-                            <th>Agenciador</th>
+                            <th>Responsável</th>
                             <th>Status</th>
                             </tr>
+                            @foreach ($processos as $key => $processo)
                             <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>Tiroteio
-                                <div class="table-links">
-                                <a href="#">Ver</a>
-                                <div class="bullet"></div>
-                                <a href="#">Editar</a>
-                                <div class="bullet"></div>
-                                <a href="#" class="text-danger">Apagar</a>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="#">Tutorial</a>
-                            </td>
-                            <td>
-                                <a href="#">
-                                <img alt="image" src="{{ asset('assets/img/avatar/avatar-5.png')}}" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                </a>
-                            </td>
-                            <td><div class="badge badge-primary">Concluído</div></td>
+                                <td>
+                                    {{ $key + 1 }}
+                                </td>
+                                <td>{{$processo->responsavel}}
+                                    <div class="table-links">
+                                    <a href="#">Ver</a>
+                                    <div class="bullet"></div>
+                                    <a href="#">Editar</a>
+                                    <div class="bullet"></div>
+                                    <a href="#" class="text-danger">Apagar</a>
+                                    </div>
+                                </td>                                
+                                <td><div class="badge badge-primary">Concluído</div></td>
                             </tr>
-                            
+                            @endforeach                                                    
                         </table>
                         </div>
-                        <div class="float-right">
+                        {{-- <div class="float-right">
                         <nav>
                             <ul class="pagination">
                             <li class="page-item disabled">
@@ -182,36 +173,10 @@
                             </li>
                             </ul>
                         </nav>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 
-                <div class="card">
-                <form method="post" class="needs-validation" novalidate="">
-                    <div class="card-header">
-                    <h4>Enviar email</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-12">
-                                <label for="assunto">Assunto</label>
-                                <input autofocus class="form-control" type="text" name="assunto" id="assunto">
-                                
-                            </div>
-                        </div>
-                        <div class="row">
-                        <div class="form-group col-12">
-                            <label>Mensagem</label>
-                            <textarea name="mensagem" id="mensagem" class="form-control summernote-simple"></textarea>
-                        </div>
-                        </div>                    
-                    </div>
-                    
-                    <div class="card-footer text-right">
-                    <button class="btn btn-primary">Enviar</button>
-                    </div>
-                </form>
-                </div>
             </div>
             </div>
         </div>

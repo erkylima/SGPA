@@ -19,7 +19,6 @@ class CreateClientesTable extends Migration
             $table->string('chave_acesso');            
             $table->string('email');
             $table->string('nome');
-            $table->string('sobrenome');
             $table->string('apelido');
             $table->string('profissao');
             $table->string('estado_civil');
@@ -30,7 +29,6 @@ class CreateClientesTable extends Migration
             $table->string('telefone2');
             $table->boolean('whatstelefone2');
             $table->boolean('incapaz');
-            $table->string('genero');
             $table->string('cpf')->nullable();
             $table->string('rg')->nullable();
             $table->string('orgao')->nullable();
@@ -39,6 +37,7 @@ class CreateClientesTable extends Migration
             $table->string('rgresp')->nullable();
             $table->string('orgaoresp')->nullable();
             $table->string('foto_path')->nullable();
+            $table->string('nome_recado')->nullable(); 
             $table->tinyInteger('status');
             $table->timestamps();
         });
@@ -60,7 +59,6 @@ class CreateClientesTable extends Migration
             $table->string('bairro');
             $table->string('cidade');
             $table->string('estado');
-            $table->string('pais');                    
             $table->timestamps();
         });
     }
