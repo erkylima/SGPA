@@ -23,7 +23,6 @@ Route::name('painel.')->prefix('painel')->middleware('auth')->group(function() {
         ]
     ]);
 
-    Route::get('cliente_nome', 'ClientesController@cliente_nome')->name('cliente_nome');
 });
 Route::name('admin.')->prefix('sistema')->middleware('auth')->group(function() {
     Route::get('dashboard', 'DashboardController')->name('index');

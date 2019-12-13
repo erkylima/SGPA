@@ -16,19 +16,19 @@ class CreateClientesTable extends Migration
         // Criar tabela cliente
         Schema::create('clientes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('chave_acesso');            
-            $table->string('email');
-            $table->string('nome');
-            $table->string('apelido');
-            $table->string('profissao');
-            $table->string('estado_civil');
-            $table->date('nascimento');
-            $table->string('nome_mae');
-            $table->string('telefone1');
-            $table->boolean('whatstelefone1');
-            $table->string('telefone2');
-            $table->boolean('whatstelefone2');
-            $table->boolean('incapaz');
+            $table->string('chave_acesso')->nullable();
+            $table->string('email')->nullable();
+            $table->string('nome')->nullable();
+            $table->string('apelido')->nullable();
+            $table->string('profissao')->nullable();
+            $table->string('estado_civil')->nullable();
+            $table->date('nascimento')->nullable();
+            $table->string('nome_mae')->nullable();
+            $table->string('telefone1')->nullable();
+            $table->boolean('whatstelefone1')->nullable();
+            $table->string('telefone2')->nullable();
+            $table->boolean('whatstelefone2')->nullable();
+            $table->boolean('incapaz')->nullable();
             $table->string('cpf')->nullable();
             $table->string('rg')->nullable();
             $table->string('orgao')->nullable();
@@ -36,8 +36,10 @@ class CreateClientesTable extends Migration
             $table->string('cpfresp')->nullable();
             $table->string('rgresp')->nullable();
             $table->string('orgaoresp')->nullable();
+            $table->string('senhainss')->nullable();
             $table->string('foto_path')->nullable();
-            $table->string('nome_recado')->nullable(); 
+            $table->string('nome_recado')->nullable();
+            $table->string('recado_telefone')->nullable();
             $table->tinyInteger('status');
             $table->timestamps();
         });
@@ -52,13 +54,13 @@ class CreateClientesTable extends Migration
                 ->on('clientes')
                 ->onDelete('cascade');
 
-            $table->string('rua');
-            $table->integer('numero');
-            $table->string('complemento');
-            $table->string('cep');
-            $table->string('bairro');
-            $table->string('cidade');
-            $table->string('estado');
+            $table->string('rua')->nullable();
+            $table->integer('numero')->nullable();
+            $table->string('complemento')->nullable();
+            $table->string('cep')->nullable();
+            $table->string('bairro')->nullable();
+            $table->string('cidade')->nullable();
+            $table->string('estado')->nullable();
             $table->timestamps();
         });
     }

@@ -48,18 +48,18 @@
                     </div>
                     <div class="card-body">
                         
-                        <form name="criar" action="{{ route('painel.clientes.store')}}" method="post" enctype="multipart/form-data">
+                        <form name="criar" class="jumbotron" action="{{ route('painel.clientes.store')}}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}     
-                            {{-- <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
+                            <div data-toggle="tooltip" data-placement="top" title="Selecione a foto do perfil do cliente abaixo." class="section-title row mb-4 justify-content-center">Foto do Cliente</div>
                             <div class="form-group row mb-4 justify-content-center">
                                 <div class="custom-file  col-lg-4 col-md-12">
-                                    <input type="file" class="custom-file-input" id="perfil" name="perfil">
+                                    <input type="file" class="custom-file-input" id="perfil" name="perfil" tabindex="1">
                                     <label class="custom-file-label" for="perfil">Escolher arquivo</label>
                                 </div>
-                            </div>                     --}}
+                            </div>                    
 
                             <div class="form-row row mb-4 justify-content-center">                            
-                                <div class="form-group col-lg-4 col-md-12">
+                                <div class="form-group col-lg-6 col-md-12">
                                     <label for="name">Nome (*)</label>
                                         
                                     <input type="text" name="name" id="name" class="form-control" value="{{old('name')}}" tabindex="1" placeholder="Digite o nome do cliente">
@@ -67,21 +67,15 @@
                                         <p>{{ $errors->first('name') }}</p>
                                     </div>                                    
                                 </div>
-                                <div class="form-group col-lg-4 col-md-12 ">
-                                    <div class="control-label">O cliente se enquadra como incapaz de respoder por si mesmo?</div>
+                                <div class="form-group col-lg-2 col-md-12" style="background: #e3342f">
+                                    <div class="control-label" style="color: white">CLIENTE INCAPAZ?</div>
                                     <label for="incapaz" class="custom-switch mt-2">
-                                      <input type="checkbox" onchange="checkIncapaz()" tabindex="1" name="incapaz" id="incapaz" class="custom-switch-input">
+                                      <input class="custom-switch-input" type="checkbox" onchange="checkIncapaz()" tabindex="1" name="incapaz" id="incapaz" class="custom-switch-input">
                                       <span class="custom-switch-indicator"></span>
-                                      <span class="custom-switch-description">Marcar se sim</span>
+                                      <span class="custom-switch-description" style="color: white">Marcar se sim</span>
                                     </label>
                                 </div>                          
-                            </div>
-
-
-
-                            <div class="form-row row mb-4 justify-content-center" id="incapazone">
-
-                            </div>
+                            </div>                            
 
                             <div class="form-row row mb-4 justify-content-center">                            
                                 <div class="form-group col-lg-3 col-md-12">
@@ -109,24 +103,32 @@
                             </div>
 
                             <div class="form-row row mb-4 justify-content-center">                                                            
+                                
+                                <div class="form-group col-lg-3 col-md-12" style="background: #e3342f">
+                                    <label for="senhainss" style="color:white">Senha INSS (opcional)</label>                                    
+                                    <input type="text" name="senhainss" id="senhainss" class="form-control" value="{{old('senhainss')}}" tabindex="1" placeholder="Digite a senha do INSS">
+                                    <div class="invalid-feedback">
+                                        <p>{{ $errors->first('senhainss') }}</p>
+                                    </div>                                    
+                                </div>
 
-                                <div class="form-group col-lg-4 col-md-12">
+                                <div class="form-group col-lg-3 col-md-12">
                                     <label for="profissao">Profissão (*)</label>                                    
                                     <input type="text" name="profissao" id="profissao" class="form-control" value="{{old('profissao')}}" tabindex="1" placeholder="Digite a profissão do cliente">
                                     <div class="invalid-feedback">
-                                        <p>{{ $errors->first('sobrenome') }}</p>
+                                        <p>{{ $errors->first('profissao') }}</p>
                                     </div>                                    
                                 </div>
 
                                 <div class="form-group col-lg-2 col-md-12">
                                     <label for="estado_civil">Estado Civil (*)</label>
                                     <select class="form-control" id="estado_civil" tabindex="1" name="estado_civil">
-                                            <option value="Solteiro">Solteiro</option>
-                                            <option value="Casado">Casado</option>
-                                            <option value="Separado">Separado</option>
-                                            <option value="Divorciado">Divorciado</option>
-                                            <option value="Viúvo">Viúvo</option>
-                                            <option value="Amasiado">Amasiado</option>
+                                        <option value="Solteiro">Solteiro</option>
+                                        <option value="Casado">Casado</option>
+                                        <option value="Separado">Separado</option>
+                                        <option value="Divorciado">Divorciado</option>
+                                        <option value="Viúvo">Viúvo</option>
+                                        <option value="Amasiado">Amasiado</option>
                                     </select>                    
                                 </div>
 
@@ -169,6 +171,10 @@
                                 </div>
                                 
                                 
+                            </div>
+
+                            <div class="form-row row mb-4 justify-content-center" style="background: #0f9acd" id="incapazone">
+
                             </div>
 
                             <div class="form-row row mb-4 justify-content-center">
@@ -364,8 +370,7 @@
         }
         function checkIncapaz(){
             if($('#incapaz').is(':checked')){
-                $('#incapazone').addClass('jumbotron');
-                document.getElementById("incapazone").innerHTML = "<div class='form-group col-lg-3 col-md-12'><label for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12'><label for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>";
+                document.getElementById("incapazone").innerHTML = "<div class='form-group col-lg-3 col-md-12 mt-2' ><label style='color: white;' for='nomeresp'>Nome do Responsável (*)</label><input type='text' name='nomeresp' id='nomeresp' class='form-control' value='' tabindex='1' placeholder='Digite o nome do responsável'><div class='invalid-feedback'><p>{{ $errors->first('nomeresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12 mt-2'><label style='color: white;' for='cpfresp'>CPF do Responsável (*)</label><input type='text' name='cpfresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='cpfresp' class='form-control' value='' tabindex='1' placeholder='Digite o cpf do responsável'><div class='invalid-feedback'><p>{{ $errors->first('cpfresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12 mt-2'><label style='color: white;' for='rgresp'>RG do Responsável (*)</label><input type='text' name='rgresp' pattern='[0-9]*'' maxlength='11' onkeyup='num(this);' id='rgresp' class='form-control' value='' tabindex='1' placeholder='Digite o rg do responsável'><div class='invalid-feedback'><p>{{ $errors->first('rgresp') }}</p></div></div><div class='form-group col-lg-2 col-md-12 mt-2'><label style='color: white;' for='orgaoresp'>Orgão Expeditor do RG (*)</label><input type='text' name='orgaoresp' id='orgaoresp' class='form-control' value='' tabindex='1' placeholder='Digite o orgão expeditor'><div class='invalid-feedback'><p>{{ $errors->first('orgaoresp') }}</p></div></div>";
             }else{
                 $('#incapazone').removeClass('jumbotron');
                 document.getElementById("incapazone").innerHTML="";

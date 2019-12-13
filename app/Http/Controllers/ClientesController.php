@@ -6,7 +6,9 @@ use App\Models\Clientes;
 use App\Models\Enderecos;
 use App\Models\Processos;
 use App\Models\Documentos;
+use App\Models\CidCategoria;
 use Illuminate\Http\Request;
+use App\Models\CidSubcategoria;
 use Illuminate\Support\Facades\DB;
 
 class ClientesController extends Controller
@@ -17,15 +19,7 @@ class ClientesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
-        if(!is_null($request->query('status'))){
-            $clientes = DB::table('clientes')
-                    ->where('status',$request->query('status'))
-                    ->paginate(15);
-        }else{
-            $clientes = DB::table('clientes')
-                        ->paginate(15);
-        }
+    {        
         $output = '';
         if($request->ajax()){
             $query = $request->get('query');        
@@ -94,7 +88,7 @@ class ClientesController extends Controller
                     $output .= "
                     <tr>
                     <td>{$cliente->id}</td>
-                    <td>{$cliente->nome}
+                    <td style='text-transform:capitalize;'>{$cliente->nome}
                         <div class=\"table-links\">
                             <a href=\"". route('painel.clientes.ver',$cliente->id) ."\">Ver</a>
                             <div class=\"bullet\"></div>
@@ -134,6 +128,15 @@ class ClientesController extends Controller
 
             return response()->json($data);  
 
+        } else {
+            if(!is_null($request->query('status'))){
+                $clientes = DB::table('clientes')
+                        ->where('status',$request->query('status'))
+                        ->paginate(15);
+            }else{
+                $clientes = DB::table('clientes')
+                            ->paginate(15);
+            }
         }
         
         return view('admin.clientes.index')->with(['clientes'=>$clientes,'output'=>$output,'status'=>$request->status]);
@@ -146,7 +149,65 @@ class ClientesController extends Controller
      */
     public function create()
     {
-        return view('admin.clientes.criar');
+        $cid_categoria = CidCategoria::all();
+        $cid_subcategoria = CidSubcategoria::all();
+        $output = '';
+        $output2 = '';
+
+        if($request->ajax()){
+            $query = $request->get('query');        
+            if($query != ''){
+                $data = DB::table('cid_categoria')
+                ->where('cod','like','%'.$query.'%')
+                ->orWhere('descricao','like','%'.$query.'%')
+                ->get();
+            } else {                                                
+                $data = DB::table('cid_categoria')
+                ->get();                            
+            }
+            $total_row = $data->count();
+            $output = ``;
+            if($total_row > 0){            
+                foreach ($data as $cid_cat) {                                        
+                    $output .= "
+                    <option value='{$cid_cat->id}'>{$cid_cat->cod} - {$cid_cat->descricao}</option>";                    
+                }
+            } else {
+                $output .= "
+                                <option>CID não encontrado</td>
+                            ";
+            }   
+            
+            $subquery = $request->get('subquery');        
+            if($subquery != ''){
+                $data2 = DB::table('cid_subcategoria')
+                ->where('cod','like','%'.$subquery.'%')
+                ->orWhere('descricao','like','%'.$subquery.'%')
+                ->get();
+            } else {                                                
+                $data2 = DB::table('cid_subcategoria')
+                ->get();                            
+            }
+            $total_row2 = $data2->count();
+            $output2 = ``;
+            if($total_row2 > 0){            
+                foreach ($data2 as $subcid_cat) {                                        
+                    $output2 .= "
+                    <option value='{$subcid_cat->id}'>{$subcid_cat->cod} - {$subcid_cat->descricao}</option>";                    
+                }
+            } else {
+                $output2 .= "
+                                <option>CID não encontrado</td>
+                            ";
+            }            
+            
+            
+            $data = array('options' => $output,'options2'=>$output2);
+
+            return response()->json($data);  
+
+        }
+        return view('admin.clientes.criar')->with(['cid'=>$cid_categoria,'cidsub'=>$cid_subcategoria]);
     }
 
     /**
@@ -162,9 +223,17 @@ class ClientesController extends Controller
         if(auth()->user()->can('create-cliente'))
         {            
             $request->validate([
-                // 'name' => 'required|min:3|max:255',                
-                'cpf' => 'unique:clientes',
-                // 'perfil'=>'image|mimes:jpg|max:2048',            
+                'apelido' => 'required|min:3|max:255',                
+                'cpf' => 'required|unique:clientes',
+                'telefone1' => 'required',                
+                'name' => 'required',                
+                'telefone1' => 'required',                
+                'telefone1' => 'required',                
+                'nome_mae' => 'required',                
+                'profissao' => 'required',                
+                'rg' => 'required',                
+                'cpf' => 'required',                
+                'telefone1' => 'required',                
             ]);
 
             if($request->whats1 == 'on'){
@@ -197,6 +266,7 @@ class ClientesController extends Controller
             $cliente->whatstelefone1=$request->whats1;
             $cliente->whatstelefone2=$request->whats2;
             $cliente->rg=$request->rg;
+            $cliente->senhainss=$request->senhainss;
             $cliente->orgao=$request->orgao;
             $cliente->cpf=$request->cpf;
             $cliente->nascimento = $request->nascimento;
@@ -206,6 +276,8 @@ class ClientesController extends Controller
             $cliente->rgresp=$request->rgresp;
             $cliente->orgaoresp=$request->orgaoresp;
             $cliente->cpfresp=$request->cpfresp;
+            $cliente->nome_recado=$request->recado;
+            $cliente->recado_telefone=$request->recado_telefone;
             $cliente->save();
             $cliente->chave_acesso = crypt($cliente->id,'SGPA');
             if($request->perfil){
@@ -257,10 +329,68 @@ class ClientesController extends Controller
      * @param  \App\Models\Clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function edit(Clientes $cliente)
+    public function edit(Clientes $cliente,Request $request)
     {
         $endereco = Enderecos::where('cliente_id',$cliente->id)->first();
-        return view('admin.clientes.editar')->with(['cliente'=>$cliente,'endereco'=>$endereco]);
+        $cid_categoria = CidCategoria::all();
+        $cid_subcategoria = CidSubcategoria::all();
+        $output = '';
+        $output2 = '';
+
+        if($request->ajax()){
+            $query = $request->get('query');        
+            if($query != ''){
+                $data = DB::table('cid_categoria')
+                ->where('cod','like','%'.$query.'%')
+                ->orWhere('descricao','like','%'.$query.'%')
+                ->get();
+            } else {                                                
+                $data = DB::table('cid_categoria')
+                ->get();                            
+            }
+            $total_row = $data->count();
+            $output = ``;
+            if($total_row > 0){            
+                foreach ($data as $cid_cat) {                                        
+                    $output .= "
+                    <option value='{$cid_cat->id}'>{$cid_cat->cod} - {$cid_cat->descricao}</option>";                    
+                }
+            } else {
+                $output .= "
+                                <option>CID não encontrado</td>
+                            ";
+            }   
+            
+            $subquery = $request->get('subquery');        
+            if($subquery != ''){
+                $data2 = DB::table('cid_subcategoria')
+                ->where('cod','like','%'.$subquery.'%')
+                ->orWhere('descricao','like','%'.$subquery.'%')
+                ->get();
+            } else {                                                
+                $data2 = DB::table('cid_subcategoria')
+                ->get();                            
+            }
+            $total_row2 = $data2->count();
+            $output2 = ``;
+            if($total_row2 > 0){            
+                foreach ($data2 as $subcid_cat) {                                        
+                    $output2 .= "
+                    <option value='{$subcid_cat->id}'>{$subcid_cat->cod} - {$subcid_cat->descricao}</option>";                    
+                }
+            } else {
+                $output2 .= "
+                                <option>CID não encontrado</td>
+                            ";
+            }            
+            
+            
+            $data = array('options' => $output,'options2'=>$output2);
+
+            return response()->json($data);  
+
+        }
+        return view('admin.clientes.editar')->with(['cliente'=>$cliente,'endereco'=>$endereco,'cid_categoria'=>$cid_categoria,'cid_subcategoria'=>$cid_subcategoria]);
     }
 
     /**
