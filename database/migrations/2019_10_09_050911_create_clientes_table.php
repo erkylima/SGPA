@@ -49,7 +49,7 @@ class CreateClientesTable extends Migration
             $table->unsignedInteger('cliente_id')->primary();
             $table->foreign('cliente_id')
                 ->references('id')
-                ->on('cliente')
+                ->on('clientes')
                 ->onDelete('cascade');
 
             $table->string('rua');
